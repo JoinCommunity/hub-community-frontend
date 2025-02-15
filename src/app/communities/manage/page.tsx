@@ -1,5 +1,4 @@
 "use client";
-
 import { SidebarProvider } from "@/app/components/ui/sidebar";
 import { AppSidebar } from "@/app/components/AppSidebar";
 import { Badge } from "@/app/components/ui/badge";
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useIsMobile } from "@/app/page";
+import { useState } from "react";
 
 const communities = [
   {
@@ -46,6 +46,29 @@ const communities = [
 
 const ManageCommunities = () => {
   const isMobile = useIsMobile();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedCommunity, setSelectedCommunity] = useState<
+    (typeof communities)[number] | null
+  >(null);
+
+  // Funções para abrir e fechar modais
+  const openEditModal = (community: any) => {
+    setSelectedCommunity(community);
+    setEditModalOpen(true);
+  };
+
+  const openDeleteModal = (community: any) => {
+    setSelectedCommunity(community);
+    setDeleteModalOpen(true);
+  };
+
+  const closeModals = () => {
+    setEditModalOpen(false);
+    setDeleteModalOpen(false);
+    setSelectedCommunity(null);
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gray-50">
@@ -68,7 +91,6 @@ const ManageCommunities = () => {
                 </Button>
               </Link>
             </header>
-
             <div className="space-y-6">
               {communities.map((community, index) => (
                 <motion.div
@@ -83,7 +105,7 @@ const ManageCommunities = () => {
                       <img
                         src={community.image}
                         alt={community.name}
-                        className="h-48 w-full object-fit md:h-full"
+                        className="h-48 w-full object-cover md:h-full"
                       />
                     </div>
                     <div className="p-6 md:w-3/4">
@@ -100,26 +122,10 @@ const ManageCommunities = () => {
                             ))}
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" className="gap-2">
-                            <Edit size={16} />
-                            Editar
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            className="gap-2"
-                          >
-                            <Trash2 size={16} />
-                            Excluir
-                          </Button>
-                        </div>
                       </div>
-
                       <p className="text-gray-600 mb-4">
                         {community.description}
                       </p>
-
                       <div className="grid grid-cols-3 gap-4 text-sm text-gray-500">
                         <div className="flex items-center gap-2">
                           <Users size={16} />
@@ -135,6 +141,26 @@ const ManageCommunities = () => {
                           <Calendar size={16} />
                           <span>{community.events} eventos</span>
                         </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => openEditModal(community)}
+                          >
+                            <Edit size={16} />
+                            Editar
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => openDeleteModal(community)}
+                          >
+                            <Trash2 size={16} />
+                            Excluir
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -142,10 +168,113 @@ const ManageCommunities = () => {
               ))}
             </div>
           </div>
+
+          {/* Modal de Edição */}
+          {editModalOpen && selectedCommunity && (
+            <Modal
+              title="Editar Comunidade"
+              onClose={closeModals}
+              actionLabel="Salvar Alterações"
+              onAction={() => {
+                console.log("Salvar alterações:", selectedCommunity);
+                closeModals();
+              }}
+            >
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Nome da Comunidade
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue={selectedCommunity.name}
+                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Descrição
+                  </label>
+                  <textarea
+                    defaultValue={selectedCommunity.description}
+                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary"
+                  />
+                </div>
+              </div>
+            </Modal>
+          )}
+
+          {/* Modal de Exclusão */}
+          {deleteModalOpen && selectedCommunity && (
+            <Modal
+              title="Excluir Comunidade"
+              onClose={closeModals}
+              actionLabel="Excluir"
+              onAction={() => {
+                console.log("Comunidade excluída:", selectedCommunity);
+                closeModals();
+              }}
+            >
+              <p className="text-gray-700">
+                Tem certeza de que deseja excluir a comunidade{" "}
+                <strong>{selectedCommunity.name}</strong>? Esta ação não pode
+                ser desfeita.
+              </p>
+            </Modal>
+          )}
         </main>
       </div>
     </SidebarProvider>
   );
 };
+
+// Componente de Modal Reutilizável
+interface ModalProps {
+  title: string;
+  children: React.ReactNode;
+  onClose: () => void;
+  actionLabel: string;
+  onAction: () => void;
+}
+const Modal = ({
+  title,
+  children,
+  onClose,
+  actionLabel,
+  onAction,
+}: ModalProps) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+        aria-label="Fechar modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+      <h2 className="text-xl font-bold text-gray-900 mb-4">{title}</h2>
+      <div className="space-y-4">{children}</div>
+      <div className="flex justify-end gap-2 mt-6">
+        <Button variant="outline" onClick={onClose}>
+          Cancelar
+        </Button>
+        <Button onClick={onAction}>{actionLabel}</Button>
+      </div>
+    </div>
+  </div>
+);
 
 export default ManageCommunities;

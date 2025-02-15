@@ -203,10 +203,6 @@ const Profile = () => {
                         location={user.location}
                         joinDate={user.joinDate}
                       />
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <Edit size={16} />
-                        Editar Perfil
-                      </Button>
                     </div>
                   </div>
                 </div>
