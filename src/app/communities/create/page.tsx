@@ -7,7 +7,7 @@ import { Label } from "@/app/components/ui/label";
 import { Textarea } from "@/app/components/ui/textarea";
 import { motion } from "framer-motion";
 import { Users, Upload, Tag } from "lucide-react";
-import { useIsMobile } from "@/app/page";
+import { useIsMobile } from "@/app/hooks/isMobile";
 import { useState } from "react";
 
 // Interface para tipagem do formulário

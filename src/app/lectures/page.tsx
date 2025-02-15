@@ -6,7 +6,7 @@ import { Badge } from "../components/ui/badge";
 import { Clock, Play, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { lectures } from "../data/palestras";
-import { useIsMobile } from "../page";
+import { useIsMobile } from "@/app/hooks/isMobile";
 
 const Lectures = () => {
   const isMobile = useIsMobile();

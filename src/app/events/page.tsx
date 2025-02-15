@@ -5,7 +5,7 @@ import { Badge } from "../components/ui/badge";
 import { Calendar, MapPin, Clock, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { events, Event as EventType } from "@/app/data/eventos";
-import { useIsMobile } from "../page";
+import { useIsMobile } from "@/app/hooks/isMobile";
 import { JSX } from "react";
 
 // Componente principal

@@ -6,7 +6,7 @@ import { Badge } from "../components/ui/badge";
 import { Users, MessageCircle, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import { communities } from "@/app/data/comunidades";
-import { useIsMobile } from "../page";
+import { useIsMobile } from "@/app/hooks/isMobile";
 
 const Communities = () => {
   const isMobile = useIsMobile();

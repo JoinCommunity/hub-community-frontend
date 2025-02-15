@@ -13,7 +13,7 @@ import {
   Plus,
   Settings,
 } from "lucide-react";
-import { useIsMobile } from "@/app/page";
+import { useIsMobile } from "@/app/hooks/isMobile";
 import {
   Sidebar,
   SidebarContent,

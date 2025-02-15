@@ -14,7 +14,7 @@ import {
   Plus,
 } from "lucide-react";
 import Link from "next/link";
-import { useIsMobile } from "@/app/page";
+import { useIsMobile } from "@/app/hooks/isMobile";
 import { useState } from "react";
 
 const communities = [

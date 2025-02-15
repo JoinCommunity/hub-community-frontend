@@ -1,49 +1,25 @@
-'use client'
+"use client";
 
 import { Calendar, Users } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useIsMobile } from "@/app/hooks/isMobile";
 
 interface CommunityCardProps {
   name: string;
   description: string;
-  memberCount: number;
-  eventCount: number;
+  members: number;
+  events: number;
   image: string;
-}
-
-function useIsMobileInComponent() {
-  const [isMobile, setIsMobile] = useState<boolean>(false);
-
-  useEffect(() => {
-    const MOBILE_BREAKPOINT = 768;
-
-    // Função para verificar o tamanho da tela
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    };
-
-    // Verifica inicialmente
-    checkMobile();
-
-    // Adiciona listener para mudanças de tamanho
-    window.addEventListener("resize", checkMobile);
-
-    // Cleanup
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  return isMobile;
 }
 
 export function CommunityCard({
   name,
   description,
-  memberCount,
-  eventCount,
+  members,
+  events,
   image,
 }: CommunityCardProps) {
-  const isMobile = useIsMobileInComponent();
+  const isMobile = useIsMobile();
 
   return (
     <motion.div
@@ -90,11 +66,11 @@ export function CommunityCard({
         >
           <div className="flex items-center gap-1.5">
             <Users size={isMobile ? 14 : 16} className="text-primary" />
-            <span>{memberCount} membros</span>
+            <span>{members} membros</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Calendar size={isMobile ? 14 : 16} className="text-primary" />
-            <span>{eventCount} eventos</span>
+            <span>{events} eventos</span>
           </div>
         </motion.div>
       </div>

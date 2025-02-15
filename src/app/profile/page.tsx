@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { mockUser, User as UserType } from "@/app/data/mockUser";
 import { JSX } from "react";
-import { useIsMobile } from "../page";
+import { useIsMobile } from "@/app/hooks/isMobile";
 
 // Componente para exibir informações rápidas do perfil
 const QuickInfo = ({

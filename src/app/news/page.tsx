@@ -6,7 +6,7 @@ import { Badge } from "../components/ui/badge";
 import { Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import { news } from "@/app/data/noticias";
-import { useIsMobile } from "../page";
+import { useIsMobile } from "@/app/hooks/isMobile";
 const News = () => {
   const isMobile = useIsMobile();
   return (
