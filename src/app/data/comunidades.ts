@@ -4,7 +4,7 @@ export const communities = [
     name: "React Goiânia",
     description:
       "Somos uma comunidade para todos que promove discussões e disseminação de conhecimento sobre React, React Native, GraphQL, Relay, Flow, Jest, Redux, Flux, Webpack e outras tecnologias do ecossistema React.",
-    members: 1000,
+    members: 100,
     posts: 320,
     events: 8,
     tags: ["React", "Frontend", "JavaScript"],
@@ -16,7 +16,7 @@ export const communities = [
     name: "AWS User Group Goiânia",
     description:
       "Grupo de usuários AWS em Goiânia, com foco em compartilhar conhecimento e fazer networking.",
-    members: 500,
+    members: 200,
     posts: 245,
     events: 5,
     tags: ["AWS", "Cloud", "Backend"],
@@ -28,7 +28,7 @@ export const communities = [
     name: "Override .NET ",
     description:
       "Comunidade de DEV's e ITPro de Goiás.",
-    members: 2900,
+    members: 150,
     posts: 180,
     events: 4,
     tags: [".NET", "C#", "Azure"],

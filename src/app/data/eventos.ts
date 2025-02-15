@@ -1,10 +1,24 @@
-export const events = [
+// Interface para tipagem dos eventos
+export interface Event {
+  id: number;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  time: string;
+  attendees: number;
+  tags: string[];
+  image: string;
+}
+
+// Array de eventos com tipagem
+export const events: Event[] = [
   {
     id: 1,
     title: "Meetup React Goiânia",
     description:
       "Prepare-se para o primeiro encontro de 2025 da comunidade React Goiânia!",
-    date: "30 Janeiro 2024",
+    date: "30/01/2024",
     location: "Goiânia, GO",
     time: "18:30 - 21:00",
     attendees: 100,
@@ -17,7 +31,7 @@ export const events = [
     title: ".NET Conf 2024/2025",
     description:
       "Venha fazer parte do nosso evento exclusivo em Goiânia, onde celebraremos o lançamento do .NET 9, em sintonia com a .NET Conf 2024. Este encontro presencial acontecerá no Hub Goiás - Centro de Inovação, no dia 15/01/2025, das 18:30h até 21:30h. Será repleto de networking e discussões enriquecedoras sobre a evolução da plataforma .NET. Além disso, teremos momentos dedicados a interações que promovem o compartilhamento de ideias e a conexão entre os profissionais de tecnologia presentes.",
-    date: "22 Julho 2024",
+    date: "22/07/2024",
     location: "Goiânia, GO",
     time: "10:00 - 17:00",
     attendees: 300,
@@ -30,7 +44,7 @@ export const events = [
     title: "AWS re:Invent re:Cap Community Edition",
     description:
       "Se você quer ficar por dentro das principais novidades da Amazon Web Services (AWS) e entender como os novos lançamentos impactam o mercado de tecnologia, esse evento é para você.",
-    date: "06 Fereveiro 2025",
+    date: "06/02/2025",
     location: "Goiânia, GO",
     time: "08:30 - 18:30",
     attendees: 250,

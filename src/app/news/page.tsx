@@ -27,7 +27,7 @@ const News = () => {
               </p>
             </header>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               {news.map((item, index) => (
                 <motion.article
                   key={item.id}
@@ -50,7 +50,9 @@ const News = () => {
                         <Calendar size={16} />
                         <span>{item.date}</span>
                         <span>•</span>
-                        <span>{item.readTime} leitura</span>
+                        <span className="inline whitespace-nowrap">
+                          {item.readTime} leitura
+                        </span>
                       </div>
                     </div>
                     <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">

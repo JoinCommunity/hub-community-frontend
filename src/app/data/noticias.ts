@@ -4,7 +4,7 @@ export const news = [
     title: "TypeScript 5.4 lançado com novos recursos",
     description:
       "A nova versão do TypeScript traz melhorias significativas em inferência de tipos e performance.",
-    date: "10 Mar 2024",
+    date: "10/03/2024",
     category: "Releases",
     readTime: "5 min",
     image:
@@ -15,7 +15,7 @@ export const news = [
     title: "React Server Components: O futuro do React",
     description:
       "Entenda como os Server Components estão mudando a forma como construímos aplicações React.",
-    date: "8 Mar 2024",
+    date: "8/03/2024",
     category: "Frontend",
     readTime: "8 min",
     image:
@@ -26,9 +26,9 @@ export const news = [
     title: "Como a IA está transformando o desenvolvimento de software",
     description:
       "Descubra as principais tendências e ferramentas de IA para desenvolvedores em 2024.",
-    date: "5 Mar 2024",
+    date: "5/03/2024",
     category: "Inteligência Artificial",
-    readTime: "10 min",
+    readTime: "3 min",
     image:
       "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80",
   },
@@ -37,7 +37,7 @@ export const news = [
     title: "Deno vs Node.js: Qual escolher em 2024?",
     description:
       "Uma análise comparativa entre as duas principais runtimes JavaScript do mercado.",
-    date: "3 Mar 2024",
+    date: "3/02/2024",
     category: "Backend",
     readTime: "7 min",
     image:

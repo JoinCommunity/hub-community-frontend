@@ -196,7 +196,11 @@ const Profile = () => {
                   </div>
 
                   {/* Quick Info */}
-                  <div className="flex-1 md:pt-6 mt-20 ml-[-20px]">
+                  <div
+                    className={`flex-1 md:pt-6 mt-20 ml-[-20px] ${
+                      isMobile ? "mt-4" : ""
+                    }`}
+                  >
                     <div className="flex items-start justify-between">
                       <QuickInfo
                         email={user.email}
