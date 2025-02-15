@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -58,7 +57,7 @@ export function AppSidebar() {
             <div key={item.title}>
               <Link
                 href={item.url}
-                className="flex flex-col items-center gap-1 text-gray-500 hover:text-primary transition-colors"
+                className="flex flex-col items-center gap-1 rounded-full text-gray-500 hover:text-primary transition-colors"
               >
                 <item.icon size={20} />
                 <span className="text-xs">{item.title}</span>

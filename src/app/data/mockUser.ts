@@ -1,4 +1,29 @@
-export const mockUser = {
+// Arquivo: "@/app/data/mockUser"
+
+export interface User {
+  name: string;
+  role: string;
+  email: string;
+  location: string;
+  joinDate: string;
+  bio: string;
+  avatar: string;
+  coverImage: string;
+  skills: string[];
+  social: {
+    github: string;
+    linkedin: string;
+    twitter: string;
+    website: string;
+  };
+  stats: {
+    communities: number;
+    events: number;
+    contributions: number;
+  };
+}
+
+export const mockUser: User = {
   name: "Rafael Oliveira",
   role: "Frontend Developer",
   email: "rafaelraniereoliveira@gmail.com",

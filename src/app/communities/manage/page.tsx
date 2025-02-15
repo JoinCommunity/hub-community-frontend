@@ -15,6 +15,7 @@ import {
   Plus,
 } from "lucide-react";
 import Link from "next/link";
+import { useIsMobile } from "@/app/page";
 
 const communities = [
   {
@@ -44,11 +45,12 @@ const communities = [
 ];
 
 const ManageCommunities = () => {
+  const isMobile = useIsMobile();
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gray-50">
         <AppSidebar />
-        <main className="flex-1 p-8">
+        <main className={`flex-1 p-8 ${isMobile ? "pb-24" : ""}`}>
           <div className="max-w-5xl mx-auto">
             <header className="flex items-center justify-between mb-8">
               <div>

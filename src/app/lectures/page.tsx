@@ -6,13 +6,15 @@ import { Badge } from "../components/ui/badge";
 import { Clock, Play, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { lectures } from "../data/palestras";
+import { useIsMobile } from "../page";
 
 const Lectures = () => {
+  const isMobile = useIsMobile();
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gray-50">
         <AppSidebar />
-        <main className="flex-1 p-8">
+        <main className={`flex-1 p-8 ${isMobile ? "pb-24" : ""}`}>
           <div className="max-w-7xl mx-auto">
             <header className="mb-12">
               <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
