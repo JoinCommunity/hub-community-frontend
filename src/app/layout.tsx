@@ -1,7 +1,10 @@
+// app/layout.tsx
 import { metadata } from "./lib/metadata";
 import { viewport } from "./lib/viewport";
-export { metadata, viewport };
 import "./globals.css";
+import { AuthProvider } from "./context/auth-context"; // Importe o AuthProvider
+
+export { metadata, viewport };
 
 export default function RootLayout({
   children,
@@ -10,7 +13,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body>{children}</body>
+      <body>
+        {/* Envolve todo o conteúdo com o AuthProvider */}
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

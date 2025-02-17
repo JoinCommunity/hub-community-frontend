@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { useIsMobile } from "@/app/hooks/isMobile";
 import { useState } from "react";
+import { AuthWrapper } from "@/app/components/AuthWrapper";
 
 const communities = [
   {
@@ -70,161 +71,163 @@ const ManageCommunities = () => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
-        <AppSidebar />
-        <main className={`flex-1 p-8 ${isMobile ? "pb-24" : ""}`}>
-          <div className="max-w-5xl mx-auto">
-            <header className="flex items-center justify-between mb-8">
-              <div>
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-                  Gerenciamento
+    <AuthWrapper>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-gray-50">
+          <AppSidebar />
+          <main className={`flex-1 p-8 ${isMobile ? "pb-24" : ""}`}>
+            <div className="max-w-5xl mx-auto">
+              <header className="flex items-center justify-between mb-8">
+                <div>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+                    Gerenciamento
+                  </div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Minhas Comunidades
+                  </h1>
                 </div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Minhas Comunidades
-                </h1>
-              </div>
-              <Link href="/communities/create">
-                <Button className="gap-2">
-                  <Plus size={16} />
-                  Nova Comunidade
-                </Button>
-              </Link>
-            </header>
-            <div className="space-y-6">
-              {communities.map((community, index) => (
-                <motion.div
-                  key={community.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-xl shadow-sm overflow-hidden"
-                >
-                  <div className="md:flex">
-                    <div className="md:w-1/4">
-                      <img
-                        src={community.image}
-                        alt={community.name}
-                        className="h-48 w-full object-cover md:h-full"
-                      />
-                    </div>
-                    <div className="p-6 md:w-3/4">
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h2 className="text-xl font-bold text-gray-900 mb-2">
-                            {community.name}
-                          </h2>
-                          <div className="flex flex-wrap gap-2 mb-2">
-                            {community.tags.map((tag) => (
-                              <Badge key={tag} variant="secondary">
-                                {tag}
-                              </Badge>
-                            ))}
+                <Link href="/communities/create">
+                  <Button className="gap-2">
+                    <Plus size={16} />
+                    Nova Comunidade
+                  </Button>
+                </Link>
+              </header>
+              <div className="space-y-6">
+                {communities.map((community, index) => (
+                  <motion.div
+                    key={community.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-xl shadow-sm overflow-hidden"
+                  >
+                    <div className="md:flex">
+                      <div className="md:w-1/4">
+                        <img
+                          src={community.image}
+                          alt={community.name}
+                          className="h-48 w-full object-cover md:h-full"
+                        />
+                      </div>
+                      <div className="p-6 md:w-3/4">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h2 className="text-xl font-bold text-gray-900 mb-2">
+                              {community.name}
+                            </h2>
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              {community.tags.map((tag) => (
+                                <Badge key={tag} variant="secondary">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-gray-600 mb-4">
+                          {community.description}
+                        </p>
+                        <div className="grid grid-cols-3 gap-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-2">
+                            <Users size={16} />
+                            <span>
+                              {community.members.toLocaleString()} membros
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <MessageCircle size={16} />
+                            <span>{community.posts} posts</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Calendar size={16} />
+                            <span>{community.events} eventos</span>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="gap-2"
+                              onClick={() => openEditModal(community)}
+                            >
+                              <Edit size={16} />
+                              Editar
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="gap-2"
+                              onClick={() => openDeleteModal(community)}
+                            >
+                              <Trash2 size={16} />
+                              Excluir
+                            </Button>
                           </div>
                         </div>
                       </div>
-                      <p className="text-gray-600 mb-4">
-                        {community.description}
-                      </p>
-                      <div className="grid grid-cols-3 gap-4 text-sm text-gray-500">
-                        <div className="flex items-center gap-2">
-                          <Users size={16} />
-                          <span>
-                            {community.members.toLocaleString()} membros
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MessageCircle size={16} />
-                          <span>{community.posts} posts</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Calendar size={16} />
-                          <span>{community.events} eventos</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="gap-2"
-                            onClick={() => openEditModal(community)}
-                          >
-                            <Edit size={16} />
-                            Editar
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            className="gap-2"
-                            onClick={() => openDeleteModal(community)}
-                          >
-                            <Trash2 size={16} />
-                            Excluir
-                          </Button>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Modal de Edição */}
-          {editModalOpen && selectedCommunity && (
-            <Modal
-              title="Editar Comunidade"
-              onClose={closeModals}
-              actionLabel="Salvar Alterações"
-              onAction={() => {
-                console.log("Salvar alterações:", selectedCommunity);
-                closeModals();
-              }}
-            >
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Nome da Comunidade
-                  </label>
-                  <input
-                    type="text"
-                    defaultValue={selectedCommunity.name}
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Descrição
-                  </label>
-                  <textarea
-                    defaultValue={selectedCommunity.description}
-                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary"
-                  />
-                </div>
+                  </motion.div>
+                ))}
               </div>
-            </Modal>
-          )}
+            </div>
 
-          {/* Modal de Exclusão */}
-          {deleteModalOpen && selectedCommunity && (
-            <Modal
-              title="Excluir Comunidade"
-              onClose={closeModals}
-              actionLabel="Excluir"
-              onAction={() => {
-                console.log("Comunidade excluída:", selectedCommunity);
-                closeModals();
-              }}
-            >
-              <p className="text-gray-700">
-                Tem certeza de que deseja excluir a comunidade{" "}
-                <strong>{selectedCommunity.name}</strong>? Esta ação não pode
-                ser desfeita.
-              </p>
-            </Modal>
-          )}
-        </main>
-      </div>
-    </SidebarProvider>
+            {/* Modal de Edição */}
+            {editModalOpen && selectedCommunity && (
+              <Modal
+                title="Editar Comunidade"
+                onClose={closeModals}
+                actionLabel="Salvar Alterações"
+                onAction={() => {
+                  console.log("Salvar alterações:", selectedCommunity);
+                  closeModals();
+                }}
+              >
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Nome da Comunidade
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={selectedCommunity.name}
+                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Descrição
+                    </label>
+                    <textarea
+                      defaultValue={selectedCommunity.description}
+                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary"
+                    />
+                  </div>
+                </div>
+              </Modal>
+            )}
+
+            {/* Modal de Exclusão */}
+            {deleteModalOpen && selectedCommunity && (
+              <Modal
+                title="Excluir Comunidade"
+                onClose={closeModals}
+                actionLabel="Excluir"
+                onAction={() => {
+                  console.log("Comunidade excluída:", selectedCommunity);
+                  closeModals();
+                }}
+              >
+                <p className="text-gray-700">
+                  Tem certeza de que deseja excluir a comunidade{" "}
+                  <strong>{selectedCommunity.name}</strong>? Esta ação não pode
+                  ser desfeita.
+                </p>
+              </Modal>
+            )}
+          </main>
+        </div>
+      </SidebarProvider>
+    </AuthWrapper>
   );
 };
 
