@@ -9,7 +9,7 @@
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "start": "next start"
+    "start": "next start -p 4010"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",

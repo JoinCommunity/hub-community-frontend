@@ -1,12 +1,6 @@
-import {
-  Calendar,
-  MapPin,
-  Users,
-  Clock,
-  Share2,
-  Heart,
-  ExternalLink,
-} from 'lucide-react';
+'use client';
+
+import { Calendar, Clock, ExternalLink, MapPin, Share2 } from 'lucide-react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
@@ -96,10 +90,10 @@ export default function EventPage({ params }: EventPageProps) {
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="text-white max-w-4xl">
             <div className="flex items-center gap-3 mb-4">
-              <Badge className="bg-blue-600 text-white">{event.type}</Badge>
-              <Badge variant="outline" className="border-white text-white">
+              {/* <Badge className="bg-blue-600 text-white">{event.type}</Badge> */}
+              {/* <Badge variant="outline" className="border-white text-white">
                 {event.level}
-              </Badge>
+              </Badge> */}
             </div>
 
             <h1 className="text-5xl font-bold mb-4">{event.title}</h1>
@@ -112,38 +106,43 @@ export default function EventPage({ params }: EventPageProps) {
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
-                <span>
-                  {event.time} ({event.duration})
-                </span>
+                <span>{event.time}</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
                 <span>{event.location}</span>
               </div>
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
                 <span>
                   {event.attendees}/{event.maxAttendees} inscritos
                 </span>
-              </div>
+              </div> */}
             </div>
 
             <div className="flex gap-3">
               <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
                 Participar do Evento
               </Button>
-              <Button
+              {/* <Button
                 size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-gray-900 bg-transparent"
               >
                 <Heart className="h-4 w-4 mr-2" />
                 Favoritar
-              </Button>
+              </Button> */}
               <Button
                 size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-gray-900 bg-transparent"
+                onClick={() => {
+                  navigator.share({
+                    title: `${event.title}\n`,
+                    text: `\n${event.description}`,
+                    url: window.location.href,
+                  });
+                }}
               >
                 <Share2 className="h-4 w-4 mr-2" />
                 Compartilhar
@@ -236,23 +235,6 @@ export default function EventPage({ params }: EventPageProps) {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Requirements */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Pré-requisitos</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {event.requirements.map((req, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                      <span>{req}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Sidebar */}
@@ -273,22 +255,22 @@ export default function EventPage({ params }: EventPageProps) {
                   <span className="text-gray-600">Horário</span>
                   <span className="font-semibold">{event.time}</span>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <span className="text-gray-600">Duração</span>
                   <span className="font-semibold">{event.duration}</span>
-                </div>
-                <div className="flex justify-between">
+                </div> */}
+                {/* <div className="flex justify-between">
                   <span className="text-gray-600">Preço</span>
                   <span className="font-semibold text-green-600">
                     {event.price}
                   </span>
-                </div>
-                <div className="flex justify-between">
+                </div> */}
+                {/* <div className="flex justify-between">
                   <span className="text-gray-600">Vagas</span>
                   <span className="font-semibold">
                     {event.attendees}/{event.maxAttendees}
                   </span>
-                </div>
+                </div> */}
               </CardContent>
             </Card>
 

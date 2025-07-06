@@ -15,9 +15,7 @@ export default function HomePage() {
         <SearchAndFilters />
 
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">
-            Comunidades em Destaque
-          </h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">Comunidades</h2>
           <Suspense
             fallback={
               <div className="animate-pulse">Carregando comunidades...</div>

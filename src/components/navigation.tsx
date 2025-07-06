@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X, Search, User } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -15,7 +15,7 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-blue-600">
-            TechCommunities
+            Hub Community
           </Link>
 
           {/* Desktop Menu */}
@@ -47,7 +47,7 @@ export function Navigation() {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* <div className="hidden md:flex items-center space-x-4">
             <Button variant="ghost" size="sm">
               <Search className="h-4 w-4" />
             </Button>
@@ -55,7 +55,7 @@ export function Navigation() {
               <User className="h-4 w-4" />
             </Button>
             <Button size="sm">Criar Evento</Button>
-          </div>
+          </div> */}
 
           {/* Mobile Menu Button */}
           <button
@@ -106,9 +106,9 @@ export function Navigation() {
                 >
                   Login
                 </Button>
-                <Button size="sm" className="flex-1">
+                {/* <Button size="sm" className="flex-1">
                   Criar Evento
-                </Button>
+                </Button> */}
               </div>
             </div>
           </div>
