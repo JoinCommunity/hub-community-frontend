@@ -85,3 +85,7 @@ export interface EventsResponse {
     data: Event[];
   };
 }
+
+export interface EventResponse {
+  data: { event: Event };
+}

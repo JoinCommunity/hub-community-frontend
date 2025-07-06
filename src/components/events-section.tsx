@@ -152,7 +152,7 @@ export function EventsSection() {
             )}
 
             <div className="flex justify-between items-center">
-              <Link href={`/event/${event.id}`}>
+              <Link href={`/events/${event.id}`}>
                 <Button>Ver Detalhes</Button>
               </Link>
               <Button variant="outline">Inscrever-se</Button>
