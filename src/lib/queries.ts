@@ -113,6 +113,8 @@ export const GET_EVENT_BY_ID = gql`
       communities {
         id
         title
+        short_description
+        images
       }
       talks {
         id

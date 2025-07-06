@@ -49,6 +49,9 @@ export interface Speaker {
 export interface Talk {
   id: string;
   title: string;
+  description?: string;
+  room_description?: string;
+  highlight?: boolean;
   speakers: Speaker[];
 }
 
@@ -59,7 +62,12 @@ export interface Event {
   start_date: string;
   end_date: string;
   images?: string[];
-  communities: Community[];
+  communities: {
+    id: string;
+    title: string;
+    short_description?: string;
+    images?: string[];
+  }[];
   talks: Talk[];
 }
 
@@ -93,5 +101,5 @@ export interface TagsResponse {
 }
 
 export interface EventResponse {
-  data: { event: Event };
+  event: Event;
 }
