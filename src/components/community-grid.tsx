@@ -1,59 +1,41 @@
-import { MapPin, Users, Calendar, Heart } from 'lucide-react';
+'use client';
+
+import { useQuery } from '@apollo/client';
+import { Calendar, Heart, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-
-// Mock data - em produção viria de uma API
-const communities = [
-  {
-    id: '1',
-    name: 'React São Paulo',
-    description: 'Comunidade dedicada ao React e ecossistema JavaScript',
-    location: 'São Paulo, SP',
-    members: 2500,
-    nextEvent: '2024-01-15',
-    technologies: ['React', 'JavaScript', 'TypeScript'],
-    image: '/images/react-community-bg.png',
-  },
-  {
-    id: '2',
-    name: 'Python Brasil',
-    description: 'A maior comunidade Python do Brasil',
-    location: 'Rio de Janeiro, RJ',
-    members: 5000,
-    nextEvent: '2024-01-20',
-    technologies: ['Python', 'Django', 'FastAPI'],
-    image: '/images/python-community-bg.png',
-  },
-  {
-    id: '3',
-    name: 'DevOps Brasília',
-    description: 'Práticas e ferramentas DevOps',
-    location: 'Brasília, DF',
-    members: 1200,
-    nextEvent: '2024-01-25',
-    technologies: ['Docker', 'Kubernetes', 'AWS'],
-    image: '/images/devops-community-bg.png',
-  },
-  {
-    id: '4',
-    name: 'Flutter Floripa',
-    description: 'Desenvolvimento mobile com Flutter',
-    location: 'Florianópolis, SC',
-    members: 800,
-    nextEvent: '2024-02-01',
-    technologies: ['Flutter', 'Dart', 'Mobile'],
-    image: '/images/flutter-community-bg.png',
-  },
-];
+import { GET_COMMUNITIES } from '@/lib/queries';
+import { CommunitiesResponse, Community, Tag } from '@/lib/types';
 
 export function CommunityGrid() {
+  const { data, loading, error } =
+    useQuery<CommunitiesResponse>(GET_COMMUNITIES);
+
+  console.log({ data, error });
+
+  if (loading) {
+    return <div>Carregando comunidades...</div>;
+  }
+  if (error) {
+    return <div>Erro ao carregar comunidades.</div>;
+  }
+
+  const communities = data?.communities?.data || [];
+
+  // Ensure communities is an array and filter out invalid entries
+  const validCommunities = Array.isArray(communities)
+    ? communities.filter(
+        community => community && typeof community === 'object' && community.id
+      )
+    : [];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {communities.map(community => (
+      {validCommunities?.map((community: Community) => (
         <Card
           key={community.id}
           className="flex flex-col h-full group hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
@@ -61,8 +43,16 @@ export function CommunityGrid() {
           <CardHeader className="p-0">
             <div className="relative overflow-hidden rounded-t-lg">
               <Image
-                src={community.image || '/placeholder.svg'}
-                alt={community.name}
+                src={
+                  Array.isArray(community.images) && community.images[0]
+                    ? community.images[0]
+                    : '/placeholder.svg'
+                }
+                alt={
+                  typeof community.title === 'string'
+                    ? community.title
+                    : 'Community'
+                }
                 width={400}
                 height={192}
                 className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
@@ -82,38 +72,52 @@ export function CommunityGrid() {
 
           <CardContent className="flex flex-col flex-1 p-6">
             <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition-colors">
-              {community.name}
+              {typeof community.title === 'string'
+                ? community.title
+                : 'Título não disponível'}
             </h3>
             <p className="text-gray-600 mb-4 line-clamp-2">
-              {community.description}
+              {typeof community.short_description === 'string'
+                ? community.short_description
+                : 'Descrição não disponível'}
             </p>
 
             <div className="flex flex-wrap gap-1 mb-4">
-              {community.technologies.map(tech => (
-                <Badge key={tech} variant="secondary" className="text-xs">
-                  {tech}
+              {community.tags?.map((tag: Tag) => (
+                <Badge key={tag.id} variant="secondary" className="text-xs">
+                  {typeof tag.value === 'string' ? tag.value : 'Tag'}
                 </Badge>
               ))}
             </div>
 
             <div className="space-y-2 mb-4">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+              {/* Location display - commented out due to missing location property in Community type */}
+              {/* <div className="flex items-center gap-2 text-sm text-gray-600">
                 <MapPin className="h-4 w-4" />
                 {community.location}
-              </div>
+              </div> */}
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Users className="h-4 w-4" />
-                {community.members.toLocaleString()} membros
+                {typeof community.members_quantity === 'number'
+                  ? `${community.members_quantity} membros`
+                  : '0 membros'}
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Calendar className="h-4 w-4" />
-                Próximo evento:{' '}
-                {new Date(community.nextEvent).toLocaleDateString('pt-BR')}
-              </div>
+              {!!community.events.length && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Calendar className="h-4 w-4" />
+                  Próximo evento:{' '}
+                  {community.events[0] &&
+                  typeof community.events[0].start_date === 'string'
+                    ? new Date(
+                        community.events[0].start_date
+                      ).toLocaleDateString('pt-BR')
+                    : 'N/A'}
+                </div>
+              )}
             </div>
 
             <div className="mt-auto">
-              <Link href={`/community/${community.id}`}>
+              <Link href={`/communities/${community.id}`}>
                 <Button className="w-full">Ver Comunidade</Button>
               </Link>
             </div>
