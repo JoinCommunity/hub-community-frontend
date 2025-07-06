@@ -1,12 +1,15 @@
+'use client';
+
 import {
-  Users,
-  Target,
-  Heart,
-  Zap,
   Github,
-  Twitter,
+  Heart,
+  Instagram,
   Linkedin,
   Mail,
+  Target,
+  Twitter,
+  Users,
+  Zap,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -19,7 +22,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-purple-600 to-blue-700 text-white py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">Sobre o TechCommunities</h1>
+          <h1 className="text-5xl font-bold mb-6">Sobre o Hub Community</h1>
           <p className="text-xl mb-8 max-w-3xl mx-auto">
             Nossa missão é conectar desenvolvedores e comunidades de tecnologia
             em todo o Brasil, facilitando o acesso ao conhecimento e promovendo
@@ -37,23 +40,22 @@ export default function AboutPage() {
                 Nossa História
               </h2>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                O TechCommunities nasceu da necessidade de centralizar
-                informações sobre comunidades e eventos de tecnologia no Brasil.
-                Percebemos que muitos desenvolvedores talentosos estavam
-                perdendo oportunidades incríveis de aprendizado e networking
-                simplesmente porque não sabiam onde encontrar essas informações.
+                O HubCommunity nasceu da necessidade de centralizar informações
+                sobre comunidades e eventos de tecnologia em Goiás. Percebemos
+                que muitas pessoas talentosas estavam perdendo oportunidades
+                incríveis de aprendizado e networking simplesmente porque não
+                sabiam onde encontrar essas informações.
               </p>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Desde 2023, já conectamos mais de 10.000 desenvolvedores com
-                suas comunidades ideais, facilitando o acesso a mais de 1.000
-                eventos em todo o país.
+                Desde 2013, já conectamos diversas pessoas com suas comunidades
+                ideais, facilitando o acesso a diversos eventos em Goiás.
               </p>
-              <Button size="lg">Junte-se a Nós</Button>
+              {/* <Button size="lg">Junte-se a Nós</Button> */}
             </div>
             <div className="relative">
               <Image
                 src="/images/hero-background.png"
-                alt="Equipe TechCommunities"
+                alt="Equipe HubCommunity"
                 width={800}
                 height={320}
                 className="rounded-lg shadow-lg w-full h-80 object-cover"
@@ -165,23 +167,41 @@ export default function AboutPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Image
-                  src="/placeholder.svg"
-                  alt="João Silva"
+                  src="https://media.licdn.com/dms/image/v2/D4D03AQExW-3yCp1-dA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1730223158826?e=1757548800&v=beta&t=0C-JBO7H6bWXzJOiIAgbC0gzFbCj_upLKA-rHig48fk"
+                  alt="Pedro Goiânia"
                   width={96}
                   height={96}
                   className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                   unoptimized
                 />
-                <h3 className="text-xl font-semibold mb-2">João Silva</h3>
-                <p className="text-blue-600 mb-2">Fundador & CEO</p>
+                <h3 className="text-xl font-semibold mb-2">Pedro Goiânia</h3>
+                <p className="text-blue-600 mb-2">Co-Fundador</p>
                 <p className="text-gray-600 text-sm mb-4">
-                  Desenvolvedor Full Stack com 8+ anos de experiência em
-                  comunidades tech.
+                  JavaScript Jedi com 10+ anos de experiência de desenvolvimento
+                  e em comunidades tech.
                 </p>
                 <div className="flex justify-center space-x-3">
-                  <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
-                  <Twitter className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
-                  <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                  <a
+                    href="http://github.com/pedrogoiania"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                  </a>
+                  <a
+                    href="http://x.com/opedrogoiania"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Twitter className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                  </a>
+                  <a
+                    href="http://linkedin.com/in/pedrogoiania"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                  </a>
                 </div>
               </CardContent>
             </Card>
@@ -189,23 +209,37 @@ export default function AboutPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Image
-                  src="/placeholder.svg"
-                  alt="Maria Santos"
+                  src="http://github.com/fjrleao.png"
+                  alt="Fábio Leão Júnior"
                   width={96}
                   height={96}
                   className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                   unoptimized
                 />
-                <h3 className="text-xl font-semibold mb-2">Maria Santos</h3>
-                <p className="text-blue-600 mb-2">CTO</p>
+                <h3 className="text-xl font-semibold mb-2">
+                  Fábio Leão Júnior
+                </h3>
+                <p className="text-blue-600 mb-2">Co-Fundador</p>
                 <p className="text-gray-600 text-sm mb-4">
-                  Especialista em arquitetura de software e liderança de equipes
-                  técnicas.
+                  Desenvolvedor Full Stack com foco em React e Python,
+                  apaixonado por criar soluções inovadoras com mais de 6 anos de
+                  experiência. Líder de comunidade há 2 anos.
                 </p>
                 <div className="flex justify-center space-x-3">
-                  <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
-                  <Twitter className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
-                  <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                  <a
+                    href="http://github.com/fjrleao"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                  </a>
+                  <a
+                    href="http://linkedin.com/in/fjrleao"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                  </a>
                 </div>
               </CardContent>
             </Card>
@@ -213,23 +247,74 @@ export default function AboutPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Image
-                  src="/placeholder.svg"
-                  alt="Pedro Costa"
+                  src="https://github.com/mvmmarcus.png"
+                  alt="Marcus Vinícius"
                   width={96}
                   height={96}
                   className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                   unoptimized
                 />
-                <h3 className="text-xl font-semibold mb-2">Pedro Costa</h3>
-                <p className="text-blue-600 mb-2">Head of Community</p>
+                <h3 className="text-xl font-semibold mb-2">Marcus Vinícius</h3>
+                <p className="text-blue-600 mb-2">Co-Fundador</p>
                 <p className="text-gray-600 text-sm mb-4">
-                  Especialista em engajamento de comunidades e organização de
-                  eventos.
+                  Desenvolvedor de Software com 7+ anos de experiência,
+                  especialista no ecossistema React e React Native.
                 </p>
                 <div className="flex justify-center space-x-3">
-                  <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
-                  <Twitter className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
-                  <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                  <div className="flex justify-center space-x-3">
+                    <a
+                      href="http://github.com/mvmmarcus"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                    </a>
+                    <a
+                      href="http://linkedin.com/in/mvmmarcus"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                    </a>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <Image
+                  src="https://github.com/luk3skyw4lker.png"
+                  alt="Lucas Lemos"
+                  width={96}
+                  height={96}
+                  className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                  unoptimized
+                />
+                <h3 className="text-xl font-semibold mb-2">Lucas Lemos</h3>
+                <p className="text-blue-600 mb-2">Co-Fundador</p>
+                <p className="text-gray-600 text-sm mb-4">
+                  Engenheiro de Software com 8 anos de experiência, especialista
+                  em desenvolvimento backend com Golang e Node.js, contribuidor
+                  open-source e voluntário em comunidades de tecnologia.
+                </p>
+                <div className="flex justify-center space-x-3">
+                  <div className="flex justify-center space-x-3">
+                    <a
+                      href="http://github.com/luk3skyw4lker"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Github className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                    </a>
+                    <a
+                      href="http://linkedin.com/in/lucashenriqueblemos"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Linkedin className="h-5 w-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                    </a>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -248,7 +333,13 @@ export default function AboutPage() {
                 Adoraríamos ouvir de você!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="flex items-center gap-2">
+                <Button
+                  size="lg"
+                  className="flex items-center gap-2"
+                  onClick={() => {
+                    window.open('mailto:contato@8020digital.com.br');
+                  }}
+                >
                   <Mail className="h-4 w-4" />
                   Enviar Email
                 </Button>
@@ -256,9 +347,15 @@ export default function AboutPage() {
                   size="lg"
                   variant="outline"
                   className="flex items-center gap-2 bg-transparent"
+                  onClick={() => {
+                    window.open(
+                      'https://instagram.com/joincommunity',
+                      '_blank'
+                    );
+                  }}
                 >
-                  <Twitter className="h-4 w-4" />
-                  Seguir no Twitter
+                  <Instagram className="h-4 w-4" />
+                  Seguir no Instagram
                 </Button>
               </div>
             </CardContent>

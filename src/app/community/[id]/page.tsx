@@ -1,3 +1,6 @@
+'use client';
+
+import { format } from 'date-fns';
 import {
   Calendar,
   Github,
@@ -118,12 +121,19 @@ export default async function CommunityPage({ params }: CommunityPageProps) {
                 className="bg-white text-blue-600 hover:bg-gray-100"
               >
                 <Heart className="h-4 w-4 mr-2" />
-                Seguir Comunidade
+                Participar da comunidade
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
+                onClick={() => {
+                  navigator.share({
+                    title: `Conheça a comunidade ${community.name}\n`,
+                    text: `\n${community.description}`,
+                    url: window.location.href,
+                  });
+                }}
               >
                 <Share2 className="h-4 w-4 mr-2" />
                 Compartilhar
@@ -172,8 +182,9 @@ export default async function CommunityPage({ params }: CommunityPageProps) {
                       <div>
                         <h4 className="font-semibold">{event.title}</h4>
                         <p className="text-sm text-gray-600">
-                          {new Date(event.date).toLocaleDateString('pt-BR')} •{' '}
-                          {event.attendees} inscritos
+                          {event.date
+                            ? format(new Date(event.date), 'dd/MM/yyyy - HH:mm')
+                            : 'Data não definida'}
                         </p>
                       </div>
                       <Button variant="outline" size="sm">
@@ -207,9 +218,9 @@ export default async function CommunityPage({ params }: CommunityPageProps) {
                       />
                       <div>
                         <h4 className="font-semibold">{organizer.name}</h4>
-                        <p className="text-sm text-gray-600">
+                        {/* <p className="text-sm text-gray-600">
                           {organizer.role}
-                        </p>
+                        </p> */}
                       </div>
                     </div>
                   ))}
