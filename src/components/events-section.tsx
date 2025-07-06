@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Users, Clock } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -74,7 +74,7 @@ export function EventsSection() {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30"></div>
             <div className="absolute top-4 left-4">
-              <Badge className="bg-blue-600 text-white">{event.type}</Badge>
+              {/* <Badge className="bg-blue-600 text-white">{event.type}</Badge> */}
             </div>
             <div className="absolute bottom-4 left-4 text-white">
               <h3 className="text-2xl font-bold mb-2">{event.title}</h3>
