@@ -1,5 +1,4 @@
 start:
-	yarn clean
 	yarn
 	yarn build
 	pm2 start yarn --name hub-community-front -- run start
