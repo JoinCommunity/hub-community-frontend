@@ -100,3 +100,32 @@ export const GET_TAGS = gql`
     }
   }
 `;
+
+export const GET_EVENT_BY_ID = gql`
+  query GetEventById($eventId: String!) {
+    event(id: $eventId) {
+      id
+      title
+      description
+      start_date
+      end_date
+      images
+      communities {
+        id
+        title
+      }
+      talks {
+        id
+        title
+        description
+        room_description
+        highlight
+        speakers {
+          id
+          name
+          avatar
+        }
+      }
+    }
+  }
+`;

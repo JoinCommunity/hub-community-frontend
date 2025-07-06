@@ -91,3 +91,7 @@ export interface TagsResponse {
     data: Tag[];
   };
 }
+
+export interface EventResponse {
+  data: { event: Event };
+}

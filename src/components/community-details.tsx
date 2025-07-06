@@ -140,6 +140,13 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                 size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
+                onClick={() => {
+                  navigator.share({
+                    title: `Confira a comunidade ${community.title}\n`,
+                    text: `\n${community.short_description}`,
+                    url: window.location.href,
+                  });
+                }}
               >
                 <Share2 className="h-4 w-4 mr-2" />
                 Compartilhar
