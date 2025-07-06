@@ -8,17 +8,44 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useFilters } from '@/contexts/filter-context';
 import { GET_COMMUNITIES } from '@/lib/queries';
 import { CommunitiesResponse, Community, Tag } from '@/lib/types';
 
 import { getNextFutureEvents } from '../utils/event';
 
 export function CommunityGrid() {
-  const { data, error } =
-    useSuspenseQuery<CommunitiesResponse>(GET_COMMUNITIES);
+  const { debouncedSearchTerm } = useFilters();
+
+  const { data, error } = useSuspenseQuery<CommunitiesResponse>(
+    GET_COMMUNITIES,
+    {
+      variables: {
+        search: debouncedSearchTerm || null,
+      },
+    }
+  );
 
   if (error) {
-    return <div>Erro ao carregar comunidades.</div>;
+    return (
+      <div className="text-center py-12">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+          <h3 className="text-lg font-semibold text-red-800 mb-2">
+            Erro de Conexão
+          </h3>
+          <p className="text-red-600 mb-4">
+            Não foi possível conectar ao servidor GraphQL. Verifique se o
+            servidor está rodando.
+          </p>
+          <details className="text-sm text-red-500">
+            <summary className="cursor-pointer">Detalhes do erro</summary>
+            <pre className="mt-2 text-xs bg-red-100 p-2 rounded overflow-auto">
+              {error.message}
+            </pre>
+          </details>
+        </div>
+      </div>
+    );
   }
 
   const communities = data?.communities?.data || [];
@@ -33,6 +60,18 @@ export function CommunityGrid() {
   const nextFutureEvents = getNextFutureEvents(
     validCommunities.flatMap(community => community.events || [])
   );
+
+  if (validCommunities.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500 text-lg">
+          {debouncedSearchTerm
+            ? 'Nenhuma comunidade encontrada com os filtros aplicados.'
+            : 'Nenhuma comunidade disponível no momento.'}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

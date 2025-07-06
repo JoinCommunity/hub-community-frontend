@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_COMMUNITIES = gql`
-  query GetCommunities {
-    communities {
+  query GetCommunities($search: String) {
+    communities(search: $search) {
       data {
         id
         title
@@ -55,8 +55,8 @@ export const GET_COMMUNITY_BY_ID = gql`
 `;
 
 export const GET_EVENTS = gql`
-  query GetEvents {
-    events {
+  query GetEvents($search: String) {
+    events(search: $search) {
       data {
         id
         title

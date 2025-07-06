@@ -8,14 +8,39 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useFilters } from '@/contexts/filter-context';
 import { GET_EVENTS } from '@/lib/queries';
 import { Event, EventsResponse } from '@/lib/types';
 
 export function EventsSection() {
-  const { data, error } = useSuspenseQuery<EventsResponse>(GET_EVENTS);
+  const { debouncedSearchTerm } = useFilters();
+
+  const { data, error } = useSuspenseQuery<EventsResponse>(GET_EVENTS, {
+    variables: {
+      search: debouncedSearchTerm || null,
+    },
+  });
 
   if (error) {
-    return <div>Erro ao carregar eventos.</div>;
+    return (
+      <div className="text-center py-12">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+          <h3 className="text-lg font-semibold text-red-800 mb-2">
+            Erro de Conexão
+          </h3>
+          <p className="text-red-600 mb-4">
+            Não foi possível conectar ao servidor GraphQL. Verifique se o
+            servidor está rodando.
+          </p>
+          <details className="text-sm text-red-500">
+            <summary className="cursor-pointer">Detalhes do erro</summary>
+            <pre className="mt-2 text-xs bg-red-100 p-2 rounded overflow-auto">
+              {error.message}
+            </pre>
+          </details>
+        </div>
+      </div>
+    );
   }
 
   const events = data?.events?.data || [];
@@ -24,6 +49,18 @@ export function EventsSection() {
   const validEvents = Array.isArray(events)
     ? events.filter(event => event && typeof event === 'object' && event.id)
     : [];
+
+  if (validEvents.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500 text-lg">
+          {debouncedSearchTerm
+            ? 'Nenhum evento encontrado com os filtros aplicados.'
+            : 'Nenhum evento disponível no momento.'}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

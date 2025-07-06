@@ -1,31 +1,25 @@
 'use client';
 
 import { useQuery } from '@apollo/client';
-import { Filter, Search } from 'lucide-react';
-import { useState } from 'react';
+import { Search, X } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+import { useFilters } from '../contexts/filter-context';
 import { GET_TAGS } from '../lib/queries';
 import { TagsResponse } from '../lib/types';
 
 export function SearchAndFilters() {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const { searchTerm, selectedTags, setSearchTerm, toggleTag, clearFilters } =
+    useFilters();
 
   const { data } = useQuery<TagsResponse>(GET_TAGS);
 
   const tags = data?.tags?.data || [];
 
-  const toggleCategory = (category: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    );
-  };
+  const hasActiveFilters = searchTerm || selectedTags.length > 0;
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-12">
@@ -33,35 +27,54 @@ export function SearchAndFilters() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           <Input
-            placeholder="Buscar comunidades ou eventos..."
+            placeholder="Buscar por nome da comunidade ou evento..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
-        <Button
-          variant="outline"
-          className="flex items-center gap-2 bg-transparent"
-        >
-          <Filter className="h-4 w-4" />
-          Filtros
-        </Button>
+        {hasActiveFilters && (
+          <Button
+            variant="outline"
+            onClick={clearFilters}
+            className="flex items-center gap-2"
+          >
+            <X className="h-4 w-4" />
+            Limpar Filtros
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2">
         {tags.map(tag => (
           <Badge
             key={tag.id}
-            variant={
-              selectedCategories.includes(tag?.value) ? 'default' : 'outline'
-            }
+            variant={selectedTags.includes(tag?.value) ? 'default' : 'outline'}
             className="cursor-pointer hover:bg-blue-100"
-            onClick={() => toggleCategory(tag?.value)}
+            onClick={() => toggleTag(tag?.value)}
           >
             {tag?.value}
           </Badge>
         ))}
       </div>
+
+      {hasActiveFilters && (
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="flex flex-wrap gap-2 items-center">
+            <span className="text-sm text-gray-600">Filtros ativos:</span>
+            {searchTerm && (
+              <Badge variant="secondary" className="text-sm">
+                Busca: &quot;{searchTerm}&quot;
+              </Badge>
+            )}
+            {selectedTags.map(tag => (
+              <Badge key={tag} variant="secondary" className="text-sm">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
