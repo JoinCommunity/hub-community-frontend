@@ -1,9 +1,10 @@
 import { Suspense } from 'react';
 
 import { CommunityGrid } from '@/components/community-grid';
-import { EventsSection } from '@/components/events-section';
 import { HeroSection } from '@/components/hero-section';
 import { SearchAndFilters } from '@/components/search-and-filters';
+
+import { EventsSection } from '../components/events-section';
 
 export default function HomePage() {
   return (
