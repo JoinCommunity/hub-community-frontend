@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
 
 import { CommunityGrid } from '@/components/community-grid';
+import { CommunityGridSkeleton } from '@/components/community-grid-skeleton';
+import { EventsSection } from '@/components/events-section';
+import { EventsSectionSkeleton } from '@/components/events-section-skeleton';
 import { HeroSection } from '@/components/hero-section';
 import { SearchAndFilters } from '@/components/search-and-filters';
-
-import { EventsSection } from '../components/events-section';
 
 export default function HomePage() {
   return (
@@ -16,11 +17,7 @@ export default function HomePage() {
 
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Comunidades</h2>
-          <Suspense
-            fallback={
-              <div className="animate-pulse">Carregando comunidades...</div>
-            }
-          >
+          <Suspense fallback={<CommunityGridSkeleton />}>
             <CommunityGrid />
           </Suspense>
         </section>
@@ -29,11 +26,7 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8">
             Próximos Eventos
           </h2>
-          <Suspense
-            fallback={
-              <div className="animate-pulse">Carregando eventos...</div>
-            }
-          >
+          <Suspense fallback={<EventsSectionSkeleton />}>
             <EventsSection />
           </Suspense>
         </section>

@@ -35,6 +35,7 @@ export const GET_COMMUNITY_BY_ID = gql`
       title
       short_description
       members_quantity
+      images
       organizers {
         id
         username
@@ -75,6 +76,25 @@ export const GET_EVENTS = gql`
             name
             avatar
           }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_TAGS = gql`
+  query GetTags {
+    tags {
+      data {
+        id
+        value
+        events {
+          id
+          title
+        }
+        communities {
+          id
+          title
         }
       }
     }

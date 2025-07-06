@@ -1,28 +1,23 @@
 'use client';
 
-import { Search, Filter } from 'lucide-react';
+import { useQuery } from '@apollo/client';
+import { Filter, Search } from 'lucide-react';
 import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-const techCategories = [
-  'JavaScript',
-  'Python',
-  'React',
-  'Node.js',
-  'DevOps',
-  'Mobile',
-  'AI/ML',
-  'Blockchain',
-  'Cloud',
-  'Design',
-];
+import { GET_TAGS } from '../lib/queries';
+import { TagsResponse } from '../lib/types';
 
 export function SearchAndFilters() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+
+  const { data } = useQuery<TagsResponse>(GET_TAGS);
+
+  const tags = data?.tags?.data || [];
 
   const toggleCategory = (category: string) => {
     setSelectedCategories(prev =>
@@ -54,16 +49,16 @@ export function SearchAndFilters() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {techCategories.map(category => (
+        {tags.map(tag => (
           <Badge
-            key={category}
+            key={tag.id}
             variant={
-              selectedCategories.includes(category) ? 'default' : 'outline'
+              selectedCategories.includes(tag?.value) ? 'default' : 'outline'
             }
             className="cursor-pointer hover:bg-blue-100"
-            onClick={() => toggleCategory(category)}
+            onClick={() => toggleCategory(tag?.value)}
           >
-            {category}
+            {tag?.value}
           </Badge>
         ))}
       </div>

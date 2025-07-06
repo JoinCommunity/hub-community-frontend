@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@apollo/client';
+import { useSuspenseQuery } from '@apollo/client';
 import { Calendar, Clock, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,11 +12,8 @@ import { GET_EVENTS } from '@/lib/queries';
 import { Event, EventsResponse } from '@/lib/types';
 
 export function EventsSection() {
-  const { data, loading, error } = useQuery<EventsResponse>(GET_EVENTS);
+  const { data, error } = useSuspenseQuery<EventsResponse>(GET_EVENTS);
 
-  if (loading) {
-    return <div>Carregando eventos...</div>;
-  }
   if (error) {
     return <div>Erro ao carregar eventos.</div>;
   }
@@ -27,8 +24,6 @@ export function EventsSection() {
   const validEvents = Array.isArray(events)
     ? events.filter(event => event && typeof event === 'object' && event.id)
     : [];
-
-  console.log('EventsSection: ', { events });
 
   return (
     <div className="space-y-6">

@@ -1,7 +1,7 @@
 'use client';
 
-import { useQuery } from '@apollo/client';
-import { Calendar, Heart, Users } from 'lucide-react';
+import { useSuspenseQuery } from '@apollo/client';
+import { Calendar, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -11,15 +11,12 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { GET_COMMUNITIES } from '@/lib/queries';
 import { CommunitiesResponse, Community, Tag } from '@/lib/types';
 
+import { getNextFutureEvents } from '../utils/event';
+
 export function CommunityGrid() {
-  const { data, loading, error } =
-    useQuery<CommunitiesResponse>(GET_COMMUNITIES);
+  const { data, error } =
+    useSuspenseQuery<CommunitiesResponse>(GET_COMMUNITIES);
 
-  console.log({ data, error });
-
-  if (loading) {
-    return <div>Carregando comunidades...</div>;
-  }
   if (error) {
     return <div>Erro ao carregar comunidades.</div>;
   }
@@ -32,6 +29,10 @@ export function CommunityGrid() {
         community => community && typeof community === 'object' && community.id
       )
     : [];
+
+  const nextFutureEvents = getNextFutureEvents(
+    validCommunities.flatMap(community => community.events || [])
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -58,7 +59,7 @@ export function CommunityGrid() {
                 className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 unoptimized
               />
-              <div className="absolute top-4 right-4">
+              {/* <div className="absolute top-4 right-4">
                 <Button
                   size="sm"
                   variant="secondary"
@@ -66,7 +67,7 @@ export function CommunityGrid() {
                 >
                   <Heart className="h-4 w-4" />
                 </Button>
-              </div>
+              </div> */}
             </div>
           </CardHeader>
 
@@ -102,16 +103,13 @@ export function CommunityGrid() {
                   ? `${community.members_quantity} membros`
                   : '0 membros'}
               </div>
-              {!!community.events.length && (
+              {!!nextFutureEvents?.length && (
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Calendar className="h-4 w-4" />
                   Próximo evento:{' '}
-                  {community.events[0] &&
-                  typeof community.events[0].start_date === 'string'
-                    ? new Date(
-                        community.events[0].start_date
-                      ).toLocaleDateString('pt-BR')
-                    : 'N/A'}
+                  {new Date(nextFutureEvents[0].start_date).toLocaleDateString(
+                    'pt-BR'
+                  )}
                 </div>
               )}
             </div>

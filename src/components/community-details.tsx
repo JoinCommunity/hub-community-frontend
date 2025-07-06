@@ -13,6 +13,7 @@ import {
   Users,
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -20,13 +21,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GET_COMMUNITY_BY_ID } from '@/lib/queries';
 import { CommunityResponse } from '@/lib/types';
 
+import { getNextFutureEvents, getPastEvents } from '../utils/event';
+
 interface CommunityDetailsProps {
   communityId: string;
 }
 
 export function CommunityDetails({ communityId }: CommunityDetailsProps) {
-  console.log('CommunityDetails: ', { communityId });
-
   const { data, loading, error } = useQuery<CommunityResponse>(
     GET_COMMUNITY_BY_ID,
     {
@@ -84,6 +85,9 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
     );
   }
 
+  const pastEvents = getPastEvents(community.events || []);
+  const nextFutureEvents = getNextFutureEvents(community.events || []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -91,7 +95,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
         <div
           className="absolute inset-0 bg-cover bg-center opacity-30"
           style={{
-            backgroundImage: `url(${community.images || '/images/react-community-bg.png'})`,
+            backgroundImage: `url(${community.images?.[0]})`,
           }}
         ></div>
         <div className="absolute inset-0 bg-black/40"></div>
@@ -176,8 +180,8 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {community.events.length > 0 ? (
-                    community.events.map(event => (
+                  {!!nextFutureEvents?.length ? (
+                    nextFutureEvents.map(event => (
                       <div
                         key={event.id}
                         className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
@@ -193,14 +197,56 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                             </p>
                           )}
                         </div>
-                        <Button variant="outline" size="sm">
-                          Ver Detalhes
-                        </Button>
+                        <Link href={`/events/${event.id}`}>
+                          <Button variant="outline" size="sm">
+                            Ver Detalhes
+                          </Button>
+                        </Link>
                       </div>
                     ))
                   ) : (
                     <p className="text-gray-500 text-center py-8">
                       Nenhum evento programado no momento.
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Past Events */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Eventos Realizados</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {!!pastEvents?.length ? (
+                    pastEvents.map(event => (
+                      <div
+                        key={event.id}
+                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                      >
+                        <div>
+                          <h4 className="font-semibold">{event.title}</h4>
+                          {!!event.talks?.length && (
+                            <p className="text-sm text-gray-600">
+                              {new Date(event.start_date).toLocaleDateString(
+                                'pt-BR'
+                              )}{' '}
+                              • {event.talks.length} palestras
+                            </p>
+                          )}
+                        </div>
+                        <Link href={`/events/${event.id}`}>
+                          <Button variant="outline" size="sm">
+                            Ver Detalhes
+                          </Button>
+                        </Link>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-center py-8">
+                      Nenhum evento realizado ainda.
                     </p>
                   )}
                 </div>
@@ -310,13 +356,13 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Eventos realizados</span>
                   <span className="font-semibold">
-                    {community.events?.length || 0}
+                    {pastEvents?.length || 0}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Próximos eventos</span>
                   <span className="font-semibold">
-                    {community.events?.length || 0}
+                    {nextFutureEvents?.length || 0}
                   </span>
                 </div>
               </CardContent>

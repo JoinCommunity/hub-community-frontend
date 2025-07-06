@@ -1,4 +1,5 @@
-import { Calendar, Users, MapPin } from 'lucide-react';
+import { Calendar, MapPin, Users } from 'lucide-react';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 
@@ -39,14 +40,14 @@ export function HeroSection() {
             size="lg"
             className="bg-white text-blue-600 hover:bg-gray-100"
           >
-            Explorar Comunidades
+            <Link href="/communities">Explorar Comunidades</Link>
           </Button>
           <Button
             size="lg"
             variant="outline"
             className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
           >
-            Ver Eventos
+            <Link href="/events">Ver Eventos</Link>
           </Button>
         </div>
       </div>
