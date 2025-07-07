@@ -1,7 +1,7 @@
 'use client';
 
 import { useSuspenseQuery } from '@apollo/client';
-import { Calendar, Clock, Users } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -111,7 +111,7 @@ export function PastEventsSection() {
           </div>
 
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-600">
@@ -137,6 +137,14 @@ export function PastEventsSection() {
                   {event.talks.length} palestras
                 </span>
               </div>
+              {event.location?.title && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600">
+                    {event.location.title}
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="mb-4">

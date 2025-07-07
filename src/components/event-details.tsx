@@ -427,6 +427,51 @@ export function EventDetails({ eventId }: EventDetailsProps) {
               </CardContent>
             </Card>
 
+            {/* Location */}
+            {event.location && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Localização</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {event.location.title && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-gray-500" />
+                      <span className="font-medium">
+                        {event.location.title}
+                      </span>
+                    </div>
+                  )}
+                  {event.location.full_address && (
+                    <div className="text-sm text-gray-600">
+                      {event.location.full_address}
+                    </div>
+                  )}
+                  {event.location.city && (
+                    <div className="text-sm text-gray-600">
+                      {event.location.city}
+                    </div>
+                  )}
+                  {event.location.google_maps_url && (
+                    <a
+                      href={event.location.google_maps_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-2"
+                    >
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-blue-600 text-blue-600 hover:bg-blue-50"
+                      >
+                        Ver no Google Maps
+                      </Button>
+                    </a>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Stats */}
             <Card>
               <CardHeader>
@@ -450,7 +495,11 @@ export function EventDetails({ eventId }: EventDetailsProps) {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Duração</span>
                   <span className="font-semibold">
-                    {isMultiDay ? 'Múltiplos dias' : '1 dia'}
+                    {(() => {
+                      const diffMs = endDate.getTime() - startDate.getTime();
+                      const diffHours = diffMs / (1000 * 60 * 60);
+                      return diffHours.toFixed(0) + ' horas';
+                    })()}
                   </span>
                 </div>
               </CardContent>

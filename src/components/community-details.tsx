@@ -3,16 +3,15 @@
 import { useQuery } from '@apollo/client';
 import {
   Calendar,
-  Github,
-  Globe,
-  Heart,
+  ExternalLink,
+  Instagram,
+  Link2Icon,
   Linkedin,
   MapPin,
+  MessageCircle,
   Share2,
-  Twitter,
   Users,
 } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
@@ -136,9 +135,23 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
               <Button
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-gray-100"
+                disabled={
+                  !community.links ||
+                  community.links.length === 0 ||
+                  !community.links[0]?.url
+                }
+                onClick={() => {
+                  if (
+                    community.links &&
+                    community.links.length > 0 &&
+                    community.links[0].url
+                  ) {
+                    window.open(community.links[0].url, '_blank');
+                  }
+                }}
               >
-                <Heart className="h-4 w-4 mr-2" />
-                Seguir Comunidade
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Participar da comunidade
               </Button>
               <Button
                 size="lg"
@@ -274,7 +287,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
             </Card>
 
             {/* Organizers */}
-            <Card>
+            {/*  <Card>
               <CardHeader>
                 <CardTitle>Organizadores</CardTitle>
               </CardHeader>
@@ -303,7 +316,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                   ))}
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
 
           {/* Sidebar */}
@@ -314,50 +327,50 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                 <CardTitle>Contato</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {community.website && (
-                  <a
-                    href={community.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:underline"
-                  >
-                    <Globe className="h-4 w-4" />
-                    Website
-                  </a>
-                )}
-                {community.github && (
-                  <a
-                    href={community.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:underline"
-                  >
-                    <Github className="h-4 w-4" />
-                    GitHub
-                  </a>
-                )}
-                {community.twitter && (
-                  <a
-                    href={community.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:underline"
-                  >
-                    <Twitter className="h-4 w-4" />
-                    Twitter
-                  </a>
-                )}
-                {community.linkedin && (
-                  <a
-                    href={community.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:underline"
-                  >
-                    <Linkedin className="h-4 w-4" />
-                    LinkedIn
-                  </a>
-                )}
+                {/* Social Media Links */}
+                {['whatsapp', 'instagram', 'linkedin', 'web'].map(media => {
+                  const found = community.links?.find(
+                    link => link.social_media === media
+                  );
+                  let Icon;
+                  switch (media) {
+                    case 'whatsapp':
+                      Icon = MessageCircle;
+                      break;
+                    case 'instagram':
+                      Icon = Instagram;
+                      break;
+                    case 'linkedin':
+                      Icon = Linkedin;
+                      break;
+                    case 'web':
+                      Icon = ExternalLink;
+                      break;
+                    default:
+                      Icon = Link2Icon;
+                  }
+                  return found ? (
+                    <a
+                      key={media}
+                      href={found.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-blue-600 hover:underline"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {media.charAt(0).toUpperCase() + media.slice(1)}
+                    </a>
+                  ) : (
+                    <div
+                      key={media}
+                      className="flex items-center gap-2 text-gray-400"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {media.charAt(0).toUpperCase() + media.slice(1)}
+                      <span className="italic">(vazio)</span>
+                    </div>
+                  );
+                })}
               </CardContent>
             </Card>
 

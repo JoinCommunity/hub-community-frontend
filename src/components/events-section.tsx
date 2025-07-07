@@ -1,9 +1,10 @@
 'use client';
 
 import { useSuspenseQuery } from '@apollo/client';
-import { Calendar, Clock, Users } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,11 @@ import { useFilters } from '@/contexts/filter-context';
 import { GET_EVENTS } from '@/lib/queries';
 import { Event, EventsResponse } from '@/lib/types';
 
-export function EventsSection() {
+export function EventsSection({
+  onCountChange,
+}: {
+  onCountChange?: (count: number) => void;
+}) {
   const { debouncedSearchTerm } = useFilters();
 
   const { data, error } = useSuspenseQuery<EventsResponse>(GET_EVENTS, {
@@ -23,6 +28,22 @@ export function EventsSection() {
         : {},
     },
   });
+
+  // Filter future events (events that haven't ended yet)
+  const futureEvents =
+    data?.events?.data?.filter(event => {
+      if (!event.end_date) return true; // If no end date, consider it future
+      const eventEndDate = new Date(event.end_date);
+      const now = new Date();
+      return eventEndDate >= now;
+    }) || [];
+
+  // Call the onCountChange callback if provided
+  React.useEffect(() => {
+    if (onCountChange) {
+      onCountChange(futureEvents.length);
+    }
+  }, [onCountChange, futureEvents.length]);
 
   if (error) {
     return (
@@ -45,21 +66,6 @@ export function EventsSection() {
       </div>
     );
   }
-
-  const events = data?.events?.data || [];
-
-  // Ensure events is an array and filter out invalid entries
-  const validEvents = Array.isArray(events)
-    ? events.filter(event => event && typeof event === 'object' && event.id)
-    : [];
-
-  // Filter future events (events that haven't ended yet)
-  const futureEvents = validEvents.filter(event => {
-    if (!event.end_date) return true; // If no end date, consider it future
-    const eventEndDate = new Date(event.end_date);
-    const now = new Date();
-    return eventEndDate >= now;
-  });
 
   if (futureEvents.length === 0) {
     return (
@@ -111,7 +117,7 @@ export function EventsSection() {
           </div>
 
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-600">
@@ -137,6 +143,14 @@ export function EventsSection() {
                   {event.talks.length} palestras
                 </span>
               </div>
+              {event.location?.title && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600">
+                    {event.location.title}
+                  </span>
+                </div>
+              )}
             </div>
 
             <ExpandableRichText
@@ -148,7 +162,9 @@ export function EventsSection() {
               <Link href={`/events/${event.id}`}>
                 <Button>Ver Detalhes</Button>
               </Link>
-              <Button variant="outline">Inscrever-se</Button>
+              <Button disabled variant="outline">
+                Inscrever-se
+              </Button>
             </div>
           </CardContent>
         </Card>

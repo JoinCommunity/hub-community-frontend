@@ -1,11 +1,14 @@
-import { Users, MapPin, Calendar } from 'lucide-react';
-import { Suspense } from 'react';
+'use client';
+
+import { Calendar, MapPin, Users } from 'lucide-react';
+import { Suspense, useState } from 'react';
 
 import { CommunityGrid } from '@/components/community-grid';
 import { SearchAndFilters } from '@/components/search-and-filters';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function CommunitiesPage() {
+  const [communityCount, setCommunityCount] = useState<number>(0);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Hero Section */}
@@ -51,7 +54,9 @@ export default function CommunitiesPage() {
             <h2 className="text-3xl font-bold text-gray-900">
               Todas as Comunidades
             </h2>
-            <p className="text-gray-600">Encontradas: 500+ comunidades</p>
+            <p className="text-gray-600">
+              Encontradas: {communityCount} comunidades
+            </p>
           </div>
 
           <Suspense
@@ -59,7 +64,7 @@ export default function CommunitiesPage() {
               <div className="animate-pulse">Carregando comunidades...</div>
             }
           >
-            <CommunityGrid />
+            <CommunityGrid onCountChange={setCommunityCount} />
           </Suspense>
         </section>
       </div>

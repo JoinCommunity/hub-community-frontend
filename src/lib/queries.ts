@@ -24,6 +24,10 @@ export const GET_COMMUNITIES = gql`
           id
           value
         }
+        links {
+          id
+          url
+        }
       }
     }
   }
@@ -51,6 +55,10 @@ export const GET_COMMUNITY_BY_ID = gql`
       tags {
         id
         value
+      }
+      links {
+        id
+        url
       }
     }
   }
@@ -80,6 +88,18 @@ export const GET_EVENTS = gql`
             id
             name
             avatar
+          }
+        }
+        location {
+          title
+          region
+          latitude
+          longitude
+          google_maps_url
+          full_address
+          city
+          events {
+            title
           }
         }
       }
@@ -133,6 +153,15 @@ export const GET_EVENT_BY_ID = gql`
           name
           avatar
         }
+      }
+      location {
+        title
+        region
+        latitude
+        longitude
+        google_maps_url
+        full_address
+        city
       }
     }
   }

@@ -10,6 +10,7 @@ export interface Community {
   events: Event[];
   tags: Tag[];
   images?: string[];
+  links?: Link[];
 }
 
 export interface CommunityDetail {
@@ -28,6 +29,7 @@ export interface CommunityDetail {
   organizers: Organizer[];
   events: Event[];
   tags: Tag[];
+  links?: Link[];
 }
 
 export interface Organizer {
@@ -41,6 +43,13 @@ export interface Organizer {
 export interface Tag {
   id: string;
   value: string;
+}
+
+export interface Link {
+  id: string;
+  title: string;
+  url: string;
+  social_media: string;
 }
 
 export interface Speaker {
@@ -58,6 +67,16 @@ export interface Talk {
   speakers: Speaker[];
 }
 
+export interface EventLocation {
+  title?: string;
+  region?: string;
+  latitude?: number;
+  longitude?: number;
+  google_maps_url?: string;
+  full_address?: string;
+  city?: string;
+}
+
 export interface Event {
   id: string;
   title: string;
@@ -73,6 +92,7 @@ export interface Event {
     images?: string[];
   }[];
   talks: Talk[];
+  location?: EventLocation;
 }
 
 export interface CommunitiesResponse {

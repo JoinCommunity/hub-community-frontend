@@ -36,19 +36,23 @@ export function HeroSection() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button
-            size="lg"
-            className="bg-white text-blue-600 hover:bg-gray-100"
-          >
-            <Link href="/communities">Explorar Comunidades</Link>
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
-          >
-            <Link href="/events">Ver Eventos</Link>
-          </Button>
+          <Link href="/communities">
+            <Button
+              size="lg"
+              className="bg-white text-blue-600 hover:bg-gray-100"
+            >
+              Explorar Comunidades
+            </Button>
+          </Link>
+          <Link href="/events">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
+            >
+              Ver Eventos
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

@@ -4,6 +4,7 @@ import { useSuspenseQuery } from '@apollo/client';
 import { Calendar, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,11 @@ import { CommunitiesResponse, Community, Tag } from '@/lib/types';
 
 import { getNextFutureEvents } from '../utils/event';
 
-export function CommunityGrid() {
+export function CommunityGrid({
+  onCountChange,
+}: {
+  onCountChange?: (count: number) => void;
+}) {
   const { debouncedSearchTerm } = useFilters();
 
   const { data, error } = useSuspenseQuery<CommunitiesResponse>(
@@ -27,6 +32,15 @@ export function CommunityGrid() {
       },
     }
   );
+
+  const communities = data?.communities?.data || [];
+
+  // Call the onCountChange callback if provided
+  React.useEffect(() => {
+    if (onCountChange) {
+      onCountChange(communities.length);
+    }
+  }, [onCountChange, communities.length]);
 
   if (error) {
     return (
@@ -50,20 +64,11 @@ export function CommunityGrid() {
     );
   }
 
-  const communities = data?.communities?.data || [];
-
-  // Ensure communities is an array and filter out invalid entries
-  const validCommunities = Array.isArray(communities)
-    ? communities.filter(
-        community => community && typeof community === 'object' && community.id
-      )
-    : [];
-
   const nextFutureEvents = getNextFutureEvents(
-    validCommunities.flatMap(community => community.events || [])
+    communities.flatMap(community => community.events || [])
   );
 
-  if (validCommunities.length === 0) {
+  if (communities.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 text-lg">
@@ -77,7 +82,7 @@ export function CommunityGrid() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {validCommunities?.map((community: Community) => (
+      {communities?.map((community: Community) => (
         <Card
           key={community.id}
           className="flex flex-col h-full group hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
@@ -97,7 +102,7 @@ export function CommunityGrid() {
                 }
                 width={400}
                 height={192}
-                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-48 group-hover:scale-105 transition-transform duration-300"
                 unoptimized
               />
               {/* <div className="absolute top-4 right-4">
