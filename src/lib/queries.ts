@@ -1,12 +1,13 @@
 import { gql } from '@apollo/client';
 
 export const GET_COMMUNITIES = gql`
-  query GetCommunities($search: String) {
-    communities(search: $search) {
+  query GetCommunities($filters: CommunityFilter) {
+    communities(filters: $filters) {
       data {
         id
         title
         short_description
+        full_description
         members_quantity
         images
         organizers {
@@ -34,6 +35,7 @@ export const GET_COMMUNITY_BY_ID = gql`
       id
       title
       short_description
+      full_description
       members_quantity
       images
       organizers {
@@ -55,8 +57,8 @@ export const GET_COMMUNITY_BY_ID = gql`
 `;
 
 export const GET_EVENTS = gql`
-  query GetEvents($search: String) {
-    events(search: $search) {
+  query GetEvents($filters: EventFilter) {
+    events(filters: $filters) {
       data {
         id
         title
@@ -67,6 +69,9 @@ export const GET_EVENTS = gql`
         communities {
           id
           title
+          short_description
+          full_description
+          images
         }
         talks {
           id
@@ -114,6 +119,7 @@ export const GET_EVENT_BY_ID = gql`
         id
         title
         short_description
+        full_description
         images
       }
       talks {

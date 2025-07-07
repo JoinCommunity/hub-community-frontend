@@ -21,7 +21,9 @@ export function CommunityGrid() {
     GET_COMMUNITIES,
     {
       variables: {
-        search: debouncedSearchTerm || null,
+        filters: debouncedSearchTerm
+          ? { title: { contains: debouncedSearchTerm } }
+          : {},
       },
     }
   );

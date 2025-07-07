@@ -18,10 +18,13 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { GET_COMMUNITY_BY_ID } from '@/lib/queries';
 import { CommunityResponse } from '@/lib/types';
 
 import { getNextFutureEvents, getPastEvents } from '../utils/event';
+
+import { RichText } from './ui/rich-text';
 
 interface CommunityDetailsProps {
   communityId: string;
@@ -103,9 +106,10 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="text-white max-w-4xl">
             <h1 className="text-5xl font-bold mb-4">{community.title}</h1>
-            <p className="text-xl mb-6 opacity-90">
-              {community.short_description}
-            </p>
+            <RichText
+              content={community.short_description}
+              className="text-xl mb-6 opacity-90"
+            />
 
             <div className="flex flex-wrap gap-6 mb-6">
               <div className="flex items-center gap-2">
@@ -166,9 +170,12 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                 <CardTitle>Sobre a Comunidade</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {community.long_description || community.short_description}
-                </p>
+                <ExpandableRichText
+                  content={
+                    community.full_description || community.short_description
+                  }
+                  className="text-gray-600 leading-relaxed mb-6"
+                />
 
                 <div className="flex flex-wrap gap-2">
                   {community.tags.map(tag => (
@@ -195,11 +202,14 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                       >
                         <div>
                           <h4 className="font-semibold">{event.title}</h4>
+                          <p className="text-sm text-gray-600">
+                            {new Date(event.start_date).toLocaleDateString(
+                              'pt-BR',
+                              { day: '2-digit', month: 'long', year: 'numeric' }
+                            )}
+                          </p>
                           {!!event.talks?.length && (
                             <p className="text-sm text-gray-600">
-                              {new Date(event.start_date).toLocaleDateString(
-                                'pt-BR'
-                              )}{' '}
                               • {event.talks.length} palestras
                             </p>
                           )}
@@ -235,11 +245,14 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                       >
                         <div>
                           <h4 className="font-semibold">{event.title}</h4>
+                          <p className="text-sm text-gray-600">
+                            {new Date(event.start_date).toLocaleDateString(
+                              'pt-BR',
+                              { day: '2-digit', month: 'long', year: 'numeric' }
+                            )}
+                          </p>
                           {!!event.talks?.length && (
                             <p className="text-sm text-gray-600">
-                              {new Date(event.start_date).toLocaleDateString(
-                                'pt-BR'
-                              )}{' '}
                               • {event.talks.length} palestras
                             </p>
                           )}

@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { GET_EVENT_BY_ID } from '@/lib/queries';
 import { EventResponse } from '@/lib/types';
 
@@ -120,11 +121,6 @@ export function EventDetails({ eventId }: EventDetailsProps) {
             <h1 className="text-5xl font-bold mb-4">
               {typeof event.title === 'string' ? event.title : 'Evento'}
             </h1>
-            <p className="text-xl mb-6 opacity-90">
-              {typeof event.description === 'string'
-                ? event.description
-                : 'Descrição não disponível'}
-            </p>
 
             <div className="flex flex-wrap gap-6 mb-6">
               <div className="flex items-center gap-2">
@@ -218,11 +214,9 @@ export function EventDetails({ eventId }: EventDetailsProps) {
                 <CardTitle>Sobre o Evento</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {typeof event.description === 'string'
-                    ? event.description
-                    : 'Descrição não disponível'}
-                </p>
+                <div className="text-gray-600 leading-relaxed mb-6">
+                  <ExpandableRichText content={event.description} />
+                </div>
               </CardContent>
             </Card>
 

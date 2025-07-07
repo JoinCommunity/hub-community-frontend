@@ -5,6 +5,8 @@ import { CommunityGridSkeleton } from '@/components/community-grid-skeleton';
 import { EventsSection } from '@/components/events-section';
 import { EventsSectionSkeleton } from '@/components/events-section-skeleton';
 import { HeroSection } from '@/components/hero-section';
+import { PastEventsSection } from '@/components/past-events-section';
+import { PastEventsSectionSkeleton } from '@/components/past-events-section-skeleton';
 import { SearchAndFilters } from '@/components/search-and-filters';
 
 export default function HomePage() {
@@ -22,12 +24,21 @@ export default function HomePage() {
           </Suspense>
         </section>
 
-        <section>
+        <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">
             Próximos Eventos
           </h2>
           <Suspense fallback={<EventsSectionSkeleton />}>
             <EventsSection />
+          </Suspense>
+        </section>
+
+        <section>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">
+            Eventos Passados
+          </h2>
+          <Suspense fallback={<PastEventsSectionSkeleton />}>
+            <PastEventsSection />
           </Suspense>
         </section>
       </div>

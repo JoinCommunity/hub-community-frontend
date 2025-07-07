@@ -1,7 +1,10 @@
+import { BlocksContent } from '@strapi/blocks-react-renderer';
+
 export interface Community {
   id: string;
   title: string;
-  short_description: string;
+  short_description: string | BlocksContent;
+  full_description: string | BlocksContent;
   members_quantity: number;
   organizers: string[];
   events: Event[];
@@ -12,8 +15,8 @@ export interface Community {
 export interface CommunityDetail {
   id: string;
   title: string;
-  short_description: string;
-  long_description?: string;
+  short_description: string | BlocksContent;
+  full_description: string | BlocksContent;
   members_quantity: number;
   images?: string[];
   location?: string;
@@ -58,14 +61,15 @@ export interface Talk {
 export interface Event {
   id: string;
   title: string;
-  description: string;
+  description: string | BlocksContent;
   start_date: string;
   end_date: string;
   images?: string[];
   communities: {
     id: string;
     title: string;
-    short_description?: string;
+    short_description: string | BlocksContent;
+    full_description: string | BlocksContent;
     images?: string[];
   }[];
   talks: Talk[];
@@ -84,7 +88,7 @@ export interface CommunityResponse {
 export interface CommunityDetail {
   id: string;
   title: string;
-  short_description: string;
+  short_description: string | BlocksContent;
   members_quantity: number;
 }
 
