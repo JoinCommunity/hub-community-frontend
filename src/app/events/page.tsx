@@ -1,11 +1,13 @@
+'use client';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
 import { EventsSection } from '@/components/events-section';
 import { SearchAndFilters } from '@/components/search-and-filters';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function EventsPage() {
+  const [eventCount, setEventCount] = useState<number>(0);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Hero Section */}
@@ -53,7 +55,7 @@ export default function EventsPage() {
             <h2 className="text-3xl font-bold text-gray-900">
               Próximos Eventos
             </h2>
-            <p className="text-gray-600">Encontrados: 150+ eventos</p>
+            <p className="text-gray-600">Encontrados: {eventCount} eventos</p>
           </div>
 
           <Suspense
@@ -61,7 +63,7 @@ export default function EventsPage() {
               <div className="animate-pulse">Carregando eventos...</div>
             }
           >
-            <EventsSection />
+            <EventsSection onCountChange={setEventCount} />
           </Suspense>
         </section>
       </div>

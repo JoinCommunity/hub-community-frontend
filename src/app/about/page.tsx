@@ -247,7 +247,7 @@ export default function AboutPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Image
-                  src="https://github.com/mvmmarcus.png"
+                  src="https://media.licdn.com/dms/image/v2/D4D03AQEvH3OwYYchVQ/profile-displayphoto-shrink_400_400/B4DZVE_NNEHYAo-/0/1740619175287?e=1757548800&v=beta&t=OhyqVh1OPTUbGlvyxXIzNJ2Y0B3LYV-riJJxlzG0vbo"
                   alt="Marcus Vinícius"
                   width={96}
                   height={96}

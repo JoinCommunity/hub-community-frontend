@@ -3,30 +3,33 @@
 import { useQuery } from '@apollo/client';
 import {
   Calendar,
-  Github,
-  Globe,
-  Heart,
+  ExternalLink,
+  Instagram,
+  Link2Icon,
   Linkedin,
   MapPin,
+  MessageCircle,
   Share2,
-  Twitter,
   Users,
 } from 'lucide-react';
-import Image from 'next/image';
+import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { GET_COMMUNITY_BY_ID } from '@/lib/queries';
 import { CommunityResponse } from '@/lib/types';
+
+import { getNextFutureEvents, getPastEvents } from '../utils/event';
+
+import { RichText } from './ui/rich-text';
 
 interface CommunityDetailsProps {
   communityId: string;
 }
 
 export function CommunityDetails({ communityId }: CommunityDetailsProps) {
-  console.log('CommunityDetails: ', { communityId });
-
   const { data, loading, error } = useQuery<CommunityResponse>(
     GET_COMMUNITY_BY_ID,
     {
@@ -84,6 +87,9 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
     );
   }
 
+  const pastEvents = getPastEvents(community.events || []);
+  const nextFutureEvents = getNextFutureEvents(community.events || []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -91,7 +97,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
         <div
           className="absolute inset-0 bg-cover bg-center opacity-30"
           style={{
-            backgroundImage: `url(${community.images || '/images/react-community-bg.png'})`,
+            backgroundImage: `url(${community.images?.[0]})`,
           }}
         ></div>
         <div className="absolute inset-0 bg-black/40"></div>
@@ -99,9 +105,10 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
         <div className="relative container mx-auto px-4 h-full flex items-center">
           <div className="text-white max-w-4xl">
             <h1 className="text-5xl font-bold mb-4">{community.title}</h1>
-            <p className="text-xl mb-6 opacity-90">
-              {community.short_description}
-            </p>
+            <RichText
+              content={community.short_description}
+              className="text-xl mb-6 opacity-90"
+            />
 
             <div className="flex flex-wrap gap-6 mb-6">
               <div className="flex items-center gap-2">
@@ -128,14 +135,35 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
               <Button
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-gray-100"
+                disabled={
+                  !community.links ||
+                  community.links.length === 0 ||
+                  !community.links[0]?.url
+                }
+                onClick={() => {
+                  if (
+                    community.links &&
+                    community.links.length > 0 &&
+                    community.links[0].url
+                  ) {
+                    window.open(community.links[0].url, '_blank');
+                  }
+                }}
               >
-                <Heart className="h-4 w-4 mr-2" />
-                Seguir Comunidade
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Participar da comunidade
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
+                onClick={() => {
+                  navigator.share({
+                    title: `Confira a comunidade ${community.title}\n`,
+                    text: `\n${community.short_description}`,
+                    url: window.location.href,
+                  });
+                }}
               >
                 <Share2 className="h-4 w-4 mr-2" />
                 Compartilhar
@@ -155,9 +183,12 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                 <CardTitle>Sobre a Comunidade</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 leading-relaxed mb-6">
-                  {community.long_description || community.short_description}
-                </p>
+                <ExpandableRichText
+                  content={
+                    community.full_description || community.short_description
+                  }
+                  className="text-gray-600 leading-relaxed mb-6"
+                />
 
                 <div className="flex flex-wrap gap-2">
                   {community.tags.map(tag => (
@@ -176,26 +207,31 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {community.events.length > 0 ? (
-                    community.events.map(event => (
+                  {!!nextFutureEvents?.length ? (
+                    nextFutureEvents.map(event => (
                       <div
                         key={event.id}
                         className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
                       >
                         <div>
                           <h4 className="font-semibold">{event.title}</h4>
+                          <p className="text-sm text-gray-600">
+                            {new Date(event.start_date).toLocaleDateString(
+                              'pt-BR',
+                              { day: '2-digit', month: 'long', year: 'numeric' }
+                            )}
+                          </p>
                           {!!event.talks?.length && (
                             <p className="text-sm text-gray-600">
-                              {new Date(event.start_date).toLocaleDateString(
-                                'pt-BR'
-                              )}{' '}
                               • {event.talks.length} palestras
                             </p>
                           )}
                         </div>
-                        <Button variant="outline" size="sm">
-                          Ver Detalhes
-                        </Button>
+                        <Link href={`/events/${event.id}`}>
+                          <Button variant="outline" size="sm">
+                            Ver Detalhes
+                          </Button>
+                        </Link>
                       </div>
                     ))
                   ) : (
@@ -207,8 +243,51 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
               </CardContent>
             </Card>
 
-            {/* Organizers */}
+            {/* Past Events */}
             <Card>
+              <CardHeader>
+                <CardTitle>Eventos Realizados</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {!!pastEvents?.length ? (
+                    pastEvents.map(event => (
+                      <div
+                        key={event.id}
+                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                      >
+                        <div>
+                          <h4 className="font-semibold">{event.title}</h4>
+                          <p className="text-sm text-gray-600">
+                            {new Date(event.start_date).toLocaleDateString(
+                              'pt-BR',
+                              { day: '2-digit', month: 'long', year: 'numeric' }
+                            )}
+                          </p>
+                          {!!event.talks?.length && (
+                            <p className="text-sm text-gray-600">
+                              • {event.talks.length} palestras
+                            </p>
+                          )}
+                        </div>
+                        <Link href={`/events/${event.id}`}>
+                          <Button variant="outline" size="sm">
+                            Ver Detalhes
+                          </Button>
+                        </Link>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-center py-8">
+                      Nenhum evento realizado ainda.
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Organizers */}
+            {/*  <Card>
               <CardHeader>
                 <CardTitle>Organizadores</CardTitle>
               </CardHeader>
@@ -237,7 +316,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                   ))}
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
 
           {/* Sidebar */}
@@ -248,50 +327,50 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                 <CardTitle>Contato</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {community.website && (
-                  <a
-                    href={community.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:underline"
-                  >
-                    <Globe className="h-4 w-4" />
-                    Website
-                  </a>
-                )}
-                {community.github && (
-                  <a
-                    href={community.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:underline"
-                  >
-                    <Github className="h-4 w-4" />
-                    GitHub
-                  </a>
-                )}
-                {community.twitter && (
-                  <a
-                    href={community.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:underline"
-                  >
-                    <Twitter className="h-4 w-4" />
-                    Twitter
-                  </a>
-                )}
-                {community.linkedin && (
-                  <a
-                    href={community.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-blue-600 hover:underline"
-                  >
-                    <Linkedin className="h-4 w-4" />
-                    LinkedIn
-                  </a>
-                )}
+                {/* Social Media Links */}
+                {['whatsapp', 'instagram', 'linkedin', 'web'].map(media => {
+                  const found = community.links?.find(
+                    link => link.social_media === media
+                  );
+                  let Icon;
+                  switch (media) {
+                    case 'whatsapp':
+                      Icon = MessageCircle;
+                      break;
+                    case 'instagram':
+                      Icon = Instagram;
+                      break;
+                    case 'linkedin':
+                      Icon = Linkedin;
+                      break;
+                    case 'web':
+                      Icon = ExternalLink;
+                      break;
+                    default:
+                      Icon = Link2Icon;
+                  }
+                  return found ? (
+                    <a
+                      key={media}
+                      href={found.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-blue-600 hover:underline"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {media.charAt(0).toUpperCase() + media.slice(1)}
+                    </a>
+                  ) : (
+                    <div
+                      key={media}
+                      className="flex items-center gap-2 text-gray-400"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {media.charAt(0).toUpperCase() + media.slice(1)}
+                      <span className="italic">(vazio)</span>
+                    </div>
+                  );
+                })}
               </CardContent>
             </Card>
 
@@ -310,13 +389,13 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Eventos realizados</span>
                   <span className="font-semibold">
-                    {community.events?.length || 0}
+                    {pastEvents?.length || 0}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Próximos eventos</span>
                   <span className="font-semibold">
-                    {community.events?.length || 0}
+                    {nextFutureEvents?.length || 0}
                   </span>
                 </div>
               </CardContent>

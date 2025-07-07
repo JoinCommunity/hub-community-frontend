@@ -11,8 +11,6 @@ interface CommunityPageProps {
 export default async function CommunityPage({ params }: CommunityPageProps) {
   const { id } = await params;
 
-  console.log('CommunityPage: ', { id });
-
   if (!id) {
     notFound();
   }

@@ -1,10 +1,13 @@
 import { Suspense } from 'react';
 
 import { CommunityGrid } from '@/components/community-grid';
+import { CommunityGridSkeleton } from '@/components/community-grid-skeleton';
+import { EventsSection } from '@/components/events-section';
+import { EventsSectionSkeleton } from '@/components/events-section-skeleton';
 import { HeroSection } from '@/components/hero-section';
+import { PastEventsSection } from '@/components/past-events-section';
+import { PastEventsSectionSkeleton } from '@/components/past-events-section-skeleton';
 import { SearchAndFilters } from '@/components/search-and-filters';
-
-import { EventsSection } from '../components/events-section';
 
 export default function HomePage() {
   return (
@@ -16,25 +19,26 @@ export default function HomePage() {
 
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Comunidades</h2>
-          <Suspense
-            fallback={
-              <div className="animate-pulse">Carregando comunidades...</div>
-            }
-          >
+          <Suspense fallback={<CommunityGridSkeleton />}>
             <CommunityGrid />
+          </Suspense>
+        </section>
+
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">
+            Próximos Eventos
+          </h2>
+          <Suspense fallback={<EventsSectionSkeleton />}>
+            <EventsSection />
           </Suspense>
         </section>
 
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">
-            Próximos Eventos
+            Eventos Passados
           </h2>
-          <Suspense
-            fallback={
-              <div className="animate-pulse">Carregando eventos...</div>
-            }
-          >
-            <EventsSection />
+          <Suspense fallback={<PastEventsSectionSkeleton />}>
+            <PastEventsSection />
           </Suspense>
         </section>
       </div>

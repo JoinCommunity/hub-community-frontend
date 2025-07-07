@@ -5,6 +5,7 @@ import type React from 'react';
 import { ApolloProviderWrapper } from '@/components/apollo-provider';
 import { Footer } from '@/components/footer';
 import { Navigation } from '@/components/navigation';
+import { FilterProvider } from '@/contexts/filter-context';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -25,9 +26,11 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={inter.className}>
         <ApolloProviderWrapper>
-          <Navigation />
-          {children}
-          <Footer />
+          <FilterProvider>
+            <Navigation />
+            {children}
+            <Footer />
+          </FilterProvider>
         </ApolloProviderWrapper>
       </body>
     </html>

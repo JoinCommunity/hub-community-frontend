@@ -1,12 +1,13 @@
 import { gql } from '@apollo/client';
 
 export const GET_COMMUNITIES = gql`
-  query GetCommunities {
-    communities {
+  query GetCommunities($filters: CommunityFilter) {
+    communities(filters: $filters) {
       data {
         id
         title
         short_description
+        full_description
         members_quantity
         images
         organizers {
@@ -23,6 +24,10 @@ export const GET_COMMUNITIES = gql`
           id
           value
         }
+        links {
+          id
+          url
+        }
       }
     }
   }
@@ -34,7 +39,9 @@ export const GET_COMMUNITY_BY_ID = gql`
       id
       title
       short_description
+      full_description
       members_quantity
+      images
       organizers {
         id
         username
@@ -49,13 +56,17 @@ export const GET_COMMUNITY_BY_ID = gql`
         id
         value
       }
+      links {
+        id
+        url
+      }
     }
   }
 `;
 
 export const GET_EVENTS = gql`
-  query GetEvents {
-    events {
+  query GetEvents($filters: EventFilter) {
+    events(filters: $filters) {
       data {
         id
         title
@@ -66,6 +77,9 @@ export const GET_EVENTS = gql`
         communities {
           id
           title
+          short_description
+          full_description
+          images
         }
         talks {
           id
@@ -76,6 +90,78 @@ export const GET_EVENTS = gql`
             avatar
           }
         }
+        location {
+          title
+          region
+          latitude
+          longitude
+          google_maps_url
+          full_address
+          city
+          events {
+            title
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_TAGS = gql`
+  query GetTags {
+    tags {
+      data {
+        id
+        value
+        events {
+          id
+          title
+        }
+        communities {
+          id
+          title
+        }
+      }
+    }
+  }
+`;
+
+export const GET_EVENT_BY_ID = gql`
+  query GetEventById($eventId: String!) {
+    event(id: $eventId) {
+      id
+      title
+      description
+      start_date
+      end_date
+      images
+      communities {
+        id
+        title
+        short_description
+        full_description
+        images
+      }
+      talks {
+        id
+        title
+        description
+        room_description
+        highlight
+        speakers {
+          id
+          name
+          avatar
+        }
+      }
+      location {
+        title
+        region
+        latitude
+        longitude
+        google_maps_url
+        full_address
+        city
       }
     }
   }

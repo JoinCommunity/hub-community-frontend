@@ -4,7 +4,6 @@ import { useSuspenseQuery } from '@apollo/client';
 import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,11 +13,7 @@ import { useFilters } from '@/contexts/filter-context';
 import { GET_EVENTS } from '@/lib/queries';
 import { Event, EventsResponse } from '@/lib/types';
 
-export function EventsSection({
-  onCountChange,
-}: {
-  onCountChange?: (count: number) => void;
-}) {
+export function PastEventsSection() {
   const { debouncedSearchTerm } = useFilters();
 
   const { data, error } = useSuspenseQuery<EventsResponse>(GET_EVENTS, {
@@ -28,22 +23,6 @@ export function EventsSection({
         : {},
     },
   });
-
-  // Filter future events (events that haven't ended yet)
-  const futureEvents =
-    data?.events?.data?.filter(event => {
-      if (!event.end_date) return true; // If no end date, consider it future
-      const eventEndDate = new Date(event.end_date);
-      const now = new Date();
-      return eventEndDate >= now;
-    }) || [];
-
-  // Call the onCountChange callback if provided
-  React.useEffect(() => {
-    if (onCountChange) {
-      onCountChange(futureEvents.length);
-    }
-  }, [onCountChange, futureEvents.length]);
 
   if (error) {
     return (
@@ -67,13 +46,28 @@ export function EventsSection({
     );
   }
 
-  if (futureEvents.length === 0) {
+  const events = data?.events?.data || [];
+
+  // Ensure events is an array and filter out invalid entries
+  const validEvents = Array.isArray(events)
+    ? events.filter(event => event && typeof event === 'object' && event.id)
+    : [];
+
+  // Filter past events (events that have already ended)
+  const pastEvents = validEvents.filter(event => {
+    if (!event.end_date) return false;
+    const eventEndDate = new Date(event.end_date);
+    const now = new Date();
+    return eventEndDate < now;
+  });
+
+  if (pastEvents.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 text-lg">
           {debouncedSearchTerm
-            ? 'Nenhum evento encontrado com os filtros aplicados.'
-            : 'Nenhum evento disponível no momento.'}
+            ? 'Nenhum evento passado encontrado com os filtros aplicados.'
+            : 'Nenhum evento passado disponível no momento.'}
         </p>
       </div>
     );
@@ -81,10 +75,10 @@ export function EventsSection({
 
   return (
     <div className="space-y-6">
-      {futureEvents.map((event: Event) => (
+      {pastEvents.map((event: Event) => (
         <Card
           key={event.id}
-          className="overflow-hidden hover:shadow-lg transition-shadow duration-300"
+          className="overflow-hidden hover:shadow-lg transition-shadow duration-300 opacity-75"
         >
           <div className="relative">
             <Image
@@ -101,7 +95,7 @@ export function EventsSection({
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30"></div>
             <div className="absolute top-4 left-4">
-              <Badge className="bg-blue-600 text-white">
+              <Badge className="bg-gray-600 text-white">
                 {event.communities[0].title}
               </Badge>
             </div>
@@ -153,17 +147,19 @@ export function EventsSection({
               )}
             </div>
 
-            <ExpandableRichText
-              content={event.description}
-              className="text-gray-600 mb-4"
-            />
+            <div className="mb-4">
+              <ExpandableRichText
+                content={event.description}
+                className="text-gray-600"
+              />
+            </div>
 
             <div className="flex justify-between items-center">
               <Link href={`/events/${event.id}`}>
-                <Button>Ver Detalhes</Button>
+                <Button variant="outline">Ver Detalhes</Button>
               </Link>
-              <Button disabled variant="outline">
-                Inscrever-se
+              <Button variant="ghost" disabled>
+                Evento Finalizado
               </Button>
             </div>
           </CardContent>
