@@ -154,7 +154,7 @@ export function EventsSection({
             </div>
 
             <ExpandableRichText
-              content={event.description}
+              content={event?.description || ''}
               className="text-gray-600 mb-4"
             />
 

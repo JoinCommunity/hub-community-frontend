@@ -149,7 +149,7 @@ export function PastEventsSection() {
 
             <div className="mb-4">
               <ExpandableRichText
-                content={event.description}
+                content={event?.description || ''}
                 className="text-gray-600"
               />
             </div>

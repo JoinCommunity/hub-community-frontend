@@ -191,7 +191,7 @@ export function EventDetails({ eventId }: EventDetailsProps) {
                 onClick={() => {
                   navigator.share({
                     title: `Confira o evento ${typeof event.title === 'string' ? event.title : 'Evento'}\n`,
-                    text: `\n${typeof event.description === 'string' ? event.description : 'Descrição não disponível'}`,
+                    text: `\n${typeof event?.description === 'string' ? event.description : 'Descrição não disponível'}`,
                     url: window.location.href,
                   });
                 }}
@@ -215,7 +215,7 @@ export function EventDetails({ eventId }: EventDetailsProps) {
               </CardHeader>
               <CardContent>
                 <div className="text-gray-600 leading-relaxed mb-6">
-                  <ExpandableRichText content={event.description} />
+                  <ExpandableRichText content={event?.description || ''} />
                 </div>
               </CardContent>
             </Card>

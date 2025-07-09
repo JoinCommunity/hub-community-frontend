@@ -80,7 +80,7 @@ export interface EventLocation {
 export interface Event {
   id: string;
   title: string;
-  description: string | BlocksContent;
+  description?: string | BlocksContent;
   start_date: string;
   end_date: string;
   images?: string[];
