@@ -56,12 +56,16 @@ export interface Speaker {
   id: string;
   name: string;
   avatar?: string;
+  biography?: string | BlocksContent;
+  socials?: Link[];
 }
 
 export interface Talk {
   id: string;
+  documentId?: string;
+  subtitle?: string;
   title: string;
-  description?: string;
+  description?: string | BlocksContent;
   room_description?: string;
   highlight?: boolean;
   speakers: Speaker[];
@@ -79,6 +83,7 @@ export interface EventLocation {
 
 export interface Event {
   id: string;
+  documentId?: string;
   title: string;
   description?: string | BlocksContent;
   start_date: string;
@@ -126,6 +131,12 @@ export interface TagsResponse {
 
 export interface EventResponse {
   event: Event;
+}
+
+export interface TalkResponse {
+  talk: Talk & {
+    event: Event;
+  };
 }
 
 // Auth Types

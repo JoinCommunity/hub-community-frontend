@@ -130,6 +130,7 @@ export const GET_EVENT_BY_ID = gql`
   query GetEventById($eventId: String!) {
     event(id: $eventId) {
       id
+      documentId
       title
       description
       start_date
@@ -144,6 +145,7 @@ export const GET_EVENT_BY_ID = gql`
       }
       talks {
         id
+        documentId
         title
         description
         room_description
@@ -188,5 +190,46 @@ export const SIGN_IN = gql`
 export const FORWARD_PASSWORD = gql`
   mutation ForwardPassword($email: String!) {
     forwardPassword(email: $email)
+  }
+`;
+
+export const GET_TALK_BY_ID = gql`
+  query GetTalkById($talkId: String!) {
+    talk(id: $talkId) {
+      id
+      title
+      description
+      subtitle
+      room_description
+      highlight
+      speakers {
+        id
+        name
+        avatar
+        biography
+      }
+      event {
+        id
+        title
+        start_date
+        end_date
+        images
+        location {
+          title
+          region
+          latitude
+          longitude
+          google_maps_url
+          full_address
+          city
+        }
+        communities {
+          id
+          title
+          short_description
+          images
+        }
+      }
+    }
   }
 `;
