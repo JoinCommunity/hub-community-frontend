@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import type React from 'react';
 
 import { ApolloProviderWrapper } from '@/components/apollo-provider';
+import { FirebaseProvider } from '@/components/firebase-provider';
 import { Footer } from '@/components/footer';
 import { Navigation } from '@/components/navigation';
 import { FilterProvider } from '@/contexts/filter-context';
@@ -25,13 +26,15 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        <ApolloProviderWrapper>
-          <FilterProvider>
-            <Navigation />
-            {children}
-            <Footer />
-          </FilterProvider>
-        </ApolloProviderWrapper>
+        <FirebaseProvider>
+          <ApolloProviderWrapper>
+            <FilterProvider>
+              <Navigation />
+              {children}
+              <Footer />
+            </FilterProvider>
+          </ApolloProviderWrapper>
+        </FirebaseProvider>
       </body>
     </html>
   );
