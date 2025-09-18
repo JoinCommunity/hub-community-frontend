@@ -131,7 +131,9 @@ export function EventsSection({
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30"></div>
             <div className="absolute top-4 left-4">
               <Badge className="bg-blue-600 text-white">
-                {event.communities[0]?.title || 'Comunidade'}
+                {event.communities.length
+                  ? event.communities[0]?.title
+                  : 'Comunidade'}
               </Badge>
             </div>
 
@@ -140,7 +142,9 @@ export function EventsSection({
                 {typeof event.title === 'string' ? event.title : 'Evento'}
               </h3>
               <p className="text-sm opacity-90">
-                {event.communities[0]?.title || 'Comunidade'}
+                {event.communities.length
+                  ? event.communities[0]?.title
+                  : 'Comunidade'}
               </p>
             </div>
           </div>
@@ -196,13 +200,16 @@ export function EventsSection({
                   Evento Encerrado
                 </Button>
               ) : isEventInAgenda(event) ? (
-                <Button
-                  disabled
-                  variant="outline"
-                  className="bg-green-50 border-green-200 text-green-700"
+                <Link
+                  href={`/agendas/${agendas.find(agenda => agenda.event.documentId === event.documentId)?.documentId}`}
                 >
-                  ✓ Na Minha Agenda
-                </Button>
+                  <Button
+                    variant="outline"
+                    className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+                  >
+                    Ver Minha Agenda
+                  </Button>
+                </Link>
               ) : (
                 <Button
                   variant="outline"

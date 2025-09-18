@@ -49,6 +49,7 @@ export const GET_COMMUNITY_BY_ID = gql`
       }
       events {
         id
+        documentId
         title
         start_date
       }
@@ -69,6 +70,7 @@ export const GET_EVENTS = gql`
     events(filters: $filters) {
       data {
         id
+        documentId
         title
         description
         start_date
@@ -83,6 +85,7 @@ export const GET_EVENTS = gql`
         }
         talks {
           id
+          documentId
           title
           speakers {
             id
@@ -244,6 +247,19 @@ export const GET_AGENDAS = gql`
           title
           images
         }
+      }
+    }
+  }
+`;
+
+export const GET_AGENDA_BY_ID = gql`
+  query GetAgendaById($agendaId: String!) {
+    agenda(id: $agendaId) {
+      talks {
+        documentId
+        title
+        subtitle
+        occur_date
       }
     }
   }

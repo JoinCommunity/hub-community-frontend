@@ -209,6 +209,21 @@ export interface AgendasResponse {
   };
 }
 
+export interface AgendaTalk {
+  documentId: string;
+  title: string;
+  subtitle: string;
+  occur_date: string;
+}
+
+export interface AgendaDetail {
+  talks: AgendaTalk[];
+}
+
+export interface AgendaDetailResponse {
+  agenda: AgendaDetail;
+}
+
 export interface AgendaContextType {
   agendas: Agenda[];
   isLoading: boolean;

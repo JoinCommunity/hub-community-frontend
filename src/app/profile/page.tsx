@@ -204,12 +204,20 @@ export default function ProfilePage() {
                             <h4 className="font-medium text-gray-900 truncate">
                               {agenda.event.title}
                             </h4>
-                            <Link
-                              href={`/events/${agenda.event.documentId}`}
-                              className="text-sm text-blue-600 hover:underline"
-                            >
-                              Ver detalhes
-                            </Link>
+                            <div className="flex gap-2 mt-1">
+                              <Link
+                                href={`/events/${agenda.event.documentId}`}
+                                className="text-sm text-blue-600 hover:underline"
+                              >
+                                Ver evento
+                              </Link>
+                              <Link
+                                href={`/agendas/${agenda.documentId}`}
+                                className="text-sm text-green-600 hover:underline"
+                              >
+                                Ver agenda
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       ))}
