@@ -45,6 +45,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   // Password Reset
   const [resetEmail, setResetEmail] = useState('');
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,12 +73,8 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
     try {
       await signUp(signUpData);
-      setSuccess('Conta criada com sucesso! Faça login para continuar.');
-      setTimeout(() => {
-        setActiveTab('signin');
-        setSuccess('');
-        setSignUpData({ email: '', name: '', password: '', username: '' });
-      }, 2000);
+      setShowEmailConfirmation(true);
+      setSuccess('Conta criada com sucesso!');
     } catch (error) {
       setError('Erro ao criar conta. Tente novamente.');
       console.error('Sign up error:', error);
@@ -109,6 +106,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setSignInData({ identifier: '', password: '' });
     setSignUpData({ email: '', name: '', password: '', username: '' });
     setResetEmail('');
+    setShowEmailConfirmation(false);
     onClose();
   };
 
@@ -128,6 +126,50 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <TabsTrigger value="signup">Cadastrar</TabsTrigger>
             <TabsTrigger value="reset">Recuperar</TabsTrigger>
           </TabsList>
+
+          {/* Email Confirmation Message */}
+          {showEmailConfirmation && (
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <Mail className="h-5 w-5 text-green-400" />
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-green-800">
+                    Email de confirmação enviado!
+                  </h3>
+                  <div className="mt-2 text-sm text-green-700">
+                    <p>
+                      Enviamos um email para <strong>{signUpData.email}</strong>{' '}
+                      com um link para confirmar sua conta. Verifique sua caixa
+                      de entrada e clique no link para ativar sua conta.
+                    </p>
+                    <p className="mt-2">
+                      Não esqueça de verificar também a pasta de spam/junk.
+                    </p>
+                  </div>
+                  <div className="mt-4">
+                    <Button
+                      onClick={() => {
+                        setShowEmailConfirmation(false);
+                        setActiveTab('signin');
+                        setSignUpData({
+                          email: '',
+                          name: '',
+                          password: '',
+                          username: '',
+                        });
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Entendi
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Sign In Tab */}
           <TabsContent value="signin" className="space-y-4">
