@@ -20,13 +20,13 @@ if (typeof window !== 'undefined') {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
   // Initialize Analytics only in browser environment
-  if (process.env.NODE_ENV === 'production') {
-    try {
-      analytics = getAnalytics(app);
-    } catch (error) {
-      console.warn('Firebase Analytics initialization failed:', error);
-    }
+  //   if (process.env.NODE_ENV === 'production') {
+  try {
+    analytics = getAnalytics(app);
+  } catch (error) {
+    console.warn('Firebase Analytics initialization failed:', error);
   }
+  //   }
 }
 
 export { analytics, app };
