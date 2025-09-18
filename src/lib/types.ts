@@ -190,3 +190,27 @@ export interface AuthContextType extends AuthState {
   signOut: () => void;
   forwardPassword: (email: string) => Promise<void>;
 }
+
+// Agenda Types
+export interface AgendaEvent {
+  documentId: string;
+  title: string;
+  images?: string[];
+}
+
+export interface Agenda {
+  documentId: string;
+  event: AgendaEvent;
+}
+
+export interface AgendasResponse {
+  agendas: {
+    data: Agenda[];
+  };
+}
+
+export interface AgendaContextType {
+  agendas: Agenda[];
+  isLoading: boolean;
+  refetchAgendas: () => Promise<void>;
+}

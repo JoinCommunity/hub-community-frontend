@@ -1,15 +1,18 @@
 'use client';
 
 import { useSuspenseQuery } from '@apollo/client';
-import { Calendar, Clock, MapPin, Users } from 'lucide-react';
+import { Calendar, Clock, MapPin, Plus, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 
+import { AuthModal } from '@/components/auth-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
+import { useAgenda } from '@/contexts/agenda-context';
+import { useAuth } from '@/contexts/auth-context';
 import { useFilters } from '@/contexts/filter-context';
 import { GET_EVENTS } from '@/lib/queries';
 import { Event, EventsResponse } from '@/lib/types';
@@ -20,6 +23,9 @@ export function EventsSection({
   onCountChange?: (count: number) => void;
 }) {
   const { debouncedSearchTerm } = useFilters();
+  const { agendas } = useAgenda();
+  const { isAuthenticated } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const { data, error } = useSuspenseQuery<EventsResponse>(GET_EVENTS, {
     variables: {
@@ -44,6 +50,29 @@ export function EventsSection({
       onCountChange(futureEvents.length);
     }
   }, [onCountChange, futureEvents.length]);
+
+  // Helper function to check if event has already happened
+  const isEventPast = (event: Event) => {
+    if (!event.end_date) return false;
+    const eventEndDate = new Date(event.end_date);
+    const now = new Date();
+    return eventEndDate < now;
+  };
+
+  // Helper function to check if event is in user's agenda
+  const isEventInAgenda = (event: Event) => {
+    return agendas.some(agenda => agenda.event.documentId === event.documentId);
+  };
+
+  // Helper function to handle agenda creation
+  const handleCreateAgenda = () => {
+    if (!isAuthenticated) {
+      setAuthModalOpen(true);
+    } else {
+      // TODO: Implement agenda creation mutation
+      console.log('Creating agenda for event...');
+    }
+  };
 
   if (error) {
     return (
@@ -162,13 +191,37 @@ export function EventsSection({
               <Link href={`/events/${event.id}`}>
                 <Button>Ver Detalhes</Button>
               </Link>
-              <Button disabled variant="outline">
-                Inscrever-se
-              </Button>
+              {isEventPast(event) ? (
+                <Button disabled variant="outline">
+                  Evento Encerrado
+                </Button>
+              ) : isEventInAgenda(event) ? (
+                <Button
+                  disabled
+                  variant="outline"
+                  className="bg-green-50 border-green-200 text-green-700"
+                >
+                  ✓ Na Minha Agenda
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={handleCreateAgenda}
+                  className="border-blue-200 text-blue-600 hover:bg-blue-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Criar Agenda
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
       ))}
+
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </div>
   );
 }

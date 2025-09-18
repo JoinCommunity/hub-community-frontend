@@ -233,3 +233,18 @@ export const GET_TALK_BY_ID = gql`
     }
   }
 `;
+
+export const GET_AGENDAS = gql`
+  query GetAgendas {
+    agendas {
+      data {
+        documentId
+        event {
+          documentId
+          title
+          images
+        }
+      }
+    }
+  }
+`;

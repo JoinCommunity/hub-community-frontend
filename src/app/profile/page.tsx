@@ -1,6 +1,8 @@
 'use client';
 
-import { LogOut, Mail, Shield, User } from 'lucide-react';
+import { Calendar, LogOut, Mail, Shield, User } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -14,10 +16,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { useAgenda } from '@/contexts/agenda-context';
 import { useAuth } from '@/contexts/auth-context';
 
 export default function ProfilePage() {
   const { user, isAuthenticated, signOut, isLoading } = useAuth();
+  const { agendas, isLoading: agendasLoading } = useAgenda();
   const router = useRouter();
 
   useEffect(() => {
@@ -67,9 +71,9 @@ export default function ProfilePage() {
             <p className="text-gray-600">Gerencie suas informações pessoais</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Profile Card */}
-            <div className="md:col-span-2">
+            <div>
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -141,6 +145,84 @@ export default function ProfilePage() {
                       </Badge>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+
+              {/* Agendas Card */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Minhas Agendas
+                  </CardTitle>
+                  <CardDescription>
+                    Eventos que você adicionou à sua agenda
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {agendasLoading ? (
+                    <div className="text-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                      <p className="mt-2 text-sm text-gray-600">
+                        Carregando agendas...
+                      </p>
+                    </div>
+                  ) : agendas.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600 mb-2">
+                        Nenhuma agenda encontrada
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Adicione eventos à sua agenda para visualizá-los aqui
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {agendas.slice(0, 5).map(agenda => (
+                        <div
+                          key={agenda.documentId}
+                          className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                        >
+                          <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
+                            {agenda.event.images &&
+                            agenda.event.images.length > 0 ? (
+                              <Image
+                                src={agenda.event.images[0]}
+                                alt={agenda.event.title}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                              />
+                            ) : (
+                              <div className="h-full w-full bg-gray-300 flex items-center justify-center">
+                                <Calendar className="h-6 w-6 text-gray-600" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-gray-900 truncate">
+                              {agenda.event.title}
+                            </h4>
+                            <Link
+                              href={`/events/${agenda.event.documentId}`}
+                              className="text-sm text-blue-600 hover:underline"
+                            >
+                              Ver detalhes
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                      {agendas.length > 5 && (
+                        <div className="text-center pt-2">
+                          <p className="text-sm text-gray-500">
+                            E mais {agendas.length - 5} evento
+                            {agendas.length - 5 > 1 ? 's' : ''}...
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
