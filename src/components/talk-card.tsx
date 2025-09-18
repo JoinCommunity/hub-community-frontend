@@ -1,18 +1,137 @@
 'use client';
 
-import { ExternalLink, MapPin } from 'lucide-react';
+import { useMutation } from '@apollo/client';
+import { ExternalLink, MapPin, Minus, Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { CREATE_AGENDA, UPDATE_AGENDA } from '@/lib/queries';
 import { Talk } from '@/lib/types';
 
 interface TalkCardProps {
   talk: Talk;
+  eventDocumentId?: string;
+  agendaDocumentId?: string;
+  isInAgenda?: boolean;
+  onAgendaChange?: () => void;
+  showAgendaActions?: boolean;
+  onOptimisticUpdate?: (talkDocumentId: string, isInAgenda: boolean) => void;
 }
 
-export function TalkCard({ talk }: TalkCardProps) {
+export function TalkCard({
+  talk,
+  eventDocumentId,
+  agendaDocumentId,
+  isInAgenda = false,
+  onAgendaChange,
+  showAgendaActions = false,
+  onOptimisticUpdate,
+}: TalkCardProps) {
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [createAgenda] = useMutation(CREATE_AGENDA);
+  const [updateAgenda] = useMutation(UPDATE_AGENDA);
+
+  const handleAddToAgenda = async () => {
+    if (!talk.documentId || !eventDocumentId) return;
+
+    setIsLoading(true);
+    try {
+      if (!agendaDocumentId) {
+        // Criar agenda se não existir
+        const { data: createData } = await createAgenda({
+          variables: {
+            input: {
+              is_public: false,
+              event: eventDocumentId,
+            },
+          },
+        });
+
+        if (createData?.createAgenda?.documentId) {
+          // Adicionar talk à agenda recém-criada
+          await updateAgenda({
+            variables: {
+              updateAgendaId: createData.createAgenda.documentId,
+              input: {
+                talksToAdd: [talk.documentId],
+              },
+            },
+          });
+        }
+      } else {
+        // Adicionar talk à agenda existente
+        await updateAgenda({
+          variables: {
+            updateAgendaId: agendaDocumentId,
+            input: {
+              talksToAdd: [talk.documentId],
+            },
+          },
+        });
+      }
+
+      // Update optimistically
+      onOptimisticUpdate?.(talk.documentId, true);
+
+      toast({
+        title: 'Talk adicionada à agenda',
+        description: `"${talk.title}" foi adicionada à sua agenda.`,
+      });
+
+      onAgendaChange?.();
+    } catch (error) {
+      console.error('Erro ao adicionar talk à agenda:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível adicionar a talk à agenda.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRemoveFromAgenda = async () => {
+    if (!talk.documentId || !agendaDocumentId) return;
+
+    setIsLoading(true);
+    try {
+      await updateAgenda({
+        variables: {
+          updateAgendaId: agendaDocumentId,
+          input: {
+            talksToRemove: [talk.documentId],
+          },
+        },
+      });
+
+      // Update optimistically
+      onOptimisticUpdate?.(talk.documentId, false);
+
+      toast({
+        title: 'Talk removida da agenda',
+        description: `"${talk.title}" foi removida da sua agenda.`,
+      });
+
+      onAgendaChange?.();
+    } catch (error) {
+      console.error('Erro ao remover talk da agenda:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível remover a talk da agenda.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div
       className={`p-4 border rounded-lg hover:bg-gray-50 transition-colors ${
@@ -71,8 +190,8 @@ export function TalkCard({ talk }: TalkCardProps) {
               </div>
             )}
         </div>
-        {talk.documentId && (
-          <div className="ml-4 flex-shrink-0">
+        <div className="ml-4 flex-shrink-0 flex flex-col gap-2">
+          {talk.documentId && (
             <Link href={`/talks/${talk.documentId}`}>
               <Button
                 size="sm"
@@ -83,8 +202,35 @@ export function TalkCard({ talk }: TalkCardProps) {
                 Ver Detalhes
               </Button>
             </Link>
-          </div>
-        )}
+          )}
+
+          {showAgendaActions && eventDocumentId && talk.documentId && (
+            <>
+              {isInAgenda ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleRemoveFromAgenda}
+                  disabled={isLoading}
+                  className="border-red-600 text-red-600 hover:bg-red-50"
+                >
+                  <Minus className="h-4 w-4 mr-2" />
+                  {isLoading ? 'Removendo...' : 'Remover da Agenda'}
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={handleAddToAgenda}
+                  disabled={isLoading}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  {isLoading ? 'Adicionando...' : 'Adicionar à Agenda'}
+                </Button>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

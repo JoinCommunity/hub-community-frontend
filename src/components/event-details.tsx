@@ -12,12 +12,14 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { TalkCard } from '@/components/talk-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
-import { GET_EVENT_BY_ID } from '@/lib/queries';
+import { useAuth } from '@/contexts/auth-context';
+import { GET_AGENDA_BY_EVENT_ID, GET_EVENT_BY_ID } from '@/lib/queries';
 import { EventResponse } from '@/lib/types';
 
 interface EventDetailsProps {
@@ -25,9 +27,30 @@ interface EventDetailsProps {
 }
 
 export function EventDetails({ eventId }: EventDetailsProps) {
+  const { isAuthenticated } = useAuth();
+  const [optimisticAgendaTalks, setOptimisticAgendaTalks] = useState<
+    Set<string>
+  >(new Set());
+
   const { data, loading, error } = useQuery<EventResponse>(GET_EVENT_BY_ID, {
     variables: { eventId },
   });
+
+  const {
+    data: agendaData,
+    loading: agendaLoading,
+    refetch: refetchAgenda,
+  } = useQuery(GET_AGENDA_BY_EVENT_ID, {
+    variables: { eventId },
+    skip: !isAuthenticated,
+    fetchPolicy: 'cache-and-network',
+  });
+
+  // Handle agenda changes
+  const handleAgendaChange = () => {
+    setOptimisticAgendaTalks(new Set()); // Reset optimistic state
+    refetchAgenda();
+  };
 
   if (loading) {
     return (
@@ -63,6 +86,36 @@ export function EventDetails({ eventId }: EventDetailsProps) {
   }
 
   const event = data?.event;
+
+  // Get agenda information
+  const agenda = agendaData?.agendas?.data?.[0];
+  const agendaTalkIds =
+    agenda?.talks?.map((talk: any) => talk.documentId) || [];
+
+  // Function to check if a talk is in the agenda (considering optimistic updates)
+  const isTalkInAgenda = (talkDocumentId: string | undefined) => {
+    if (!talkDocumentId) return false;
+    return (
+      agendaTalkIds.includes(talkDocumentId) ||
+      optimisticAgendaTalks.has(talkDocumentId)
+    );
+  };
+
+  // Function to handle optimistic updates
+  const handleOptimisticUpdate = (
+    talkDocumentId: string,
+    isInAgenda: boolean
+  ) => {
+    setOptimisticAgendaTalks(prev => {
+      const newSet = new Set(prev);
+      if (isInAgenda) {
+        newSet.add(talkDocumentId);
+      } else {
+        newSet.delete(talkDocumentId);
+      }
+      return newSet;
+    });
+  };
 
   if (!event) {
     return (
@@ -231,7 +284,16 @@ export function EventDetails({ eventId }: EventDetailsProps) {
                   Array.isArray(event.talks) &&
                   event.talks.length > 0 ? (
                     event.talks.map(talk => (
-                      <TalkCard key={talk.documentId} talk={talk} />
+                      <TalkCard
+                        key={talk.documentId}
+                        talk={talk}
+                        eventDocumentId={event.documentId}
+                        agendaDocumentId={agenda?.documentId}
+                        isInAgenda={isTalkInAgenda(talk.documentId)}
+                        onAgendaChange={handleAgendaChange}
+                        onOptimisticUpdate={handleOptimisticUpdate}
+                        showAgendaActions={isAuthenticated}
+                      />
                     ))
                   ) : (
                     <p className="text-gray-500 text-center py-8">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useSuspenseQuery } from '@apollo/client';
+import { useMutation, useSuspenseQuery } from '@apollo/client';
 import { Calendar, Clock, MapPin, Plus, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { useAgenda } from '@/contexts/agenda-context';
 import { useAuth } from '@/contexts/auth-context';
 import { useFilters } from '@/contexts/filter-context';
-import { GET_EVENTS } from '@/lib/queries';
+import { CREATE_AGENDA, GET_EVENTS } from '@/lib/queries';
 import { Event, EventsResponse } from '@/lib/types';
 
 export function EventsSection({
@@ -23,9 +23,11 @@ export function EventsSection({
   onCountChange?: (count: number) => void;
 }) {
   const { debouncedSearchTerm } = useFilters();
-  const { agendas } = useAgenda();
+  const { agendas, refetchAgendas } = useAgenda();
   const { isAuthenticated } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  const [createAgendaMutation] = useMutation(CREATE_AGENDA);
 
   const { data, error } = useSuspenseQuery<EventsResponse>(GET_EVENTS, {
     variables: {
@@ -65,12 +67,24 @@ export function EventsSection({
   };
 
   // Helper function to handle agenda creation
-  const handleCreateAgenda = () => {
+  const handleCreateAgenda = async (event: Event) => {
     if (!isAuthenticated) {
       setAuthModalOpen(true);
     } else {
-      // TODO: Implement agenda creation mutation
-      console.log('Creating agenda for event...');
+      try {
+        await createAgendaMutation({
+          variables: {
+            input: {
+              event: event.documentId,
+              is_public: false,
+            },
+          },
+        });
+        // Refresh agendas after creation
+        await refetchAgendas();
+      } catch (error) {
+        console.error('Error creating agenda:', error);
+      }
     }
   };
 
@@ -213,7 +227,7 @@ export function EventsSection({
               ) : (
                 <Button
                   variant="outline"
-                  onClick={handleCreateAgenda}
+                  onClick={() => handleCreateAgenda(event)}
                   className="border-blue-200 text-blue-600 hover:bg-blue-50"
                 >
                   <Plus className="h-4 w-4 mr-2" />

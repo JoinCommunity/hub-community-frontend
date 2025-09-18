@@ -1,12 +1,14 @@
 'use client';
 
-import { useQuery } from '@apollo/client';
-import { Calendar, Clock } from 'lucide-react';
+import { useMutation, useQuery } from '@apollo/client';
+import { Calendar, Clock, Minus } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { GET_AGENDA_BY_ID } from '@/lib/queries';
+import { useToast } from '@/hooks/use-toast';
+import { GET_AGENDA_BY_ID, UPDATE_AGENDA } from '@/lib/queries';
 import { AgendaDetailResponse } from '@/lib/types';
 
 interface AgendaDetailsProps {
@@ -14,12 +16,53 @@ interface AgendaDetailsProps {
 }
 
 export function AgendaDetails({ agendaId }: AgendaDetailsProps) {
-  const { data, loading, error } = useQuery<AgendaDetailResponse>(
+  const { toast } = useToast();
+  const [removingTalkIds, setRemovingTalkIds] = useState<Set<string>>(new Set());
+
+  const { data, loading, error, refetch } = useQuery<AgendaDetailResponse>(
     GET_AGENDA_BY_ID,
     {
       variables: { agendaId },
     }
   );
+
+  const [updateAgenda] = useMutation(UPDATE_AGENDA);
+
+  const handleRemoveFromAgenda = async (talkDocumentId: string) => {
+    setRemovingTalkIds(prev => new Set(prev).add(talkDocumentId));
+
+    try {
+      await updateAgenda({
+        variables: {
+          updateAgendaId: agendaId,
+          input: {
+            talksToRemove: [talkDocumentId],
+          },
+        },
+      });
+
+      toast({
+        title: 'Talk removida da agenda',
+        description: 'A palestra foi removida da sua agenda com sucesso.',
+      });
+
+      // Refetch to update the list
+      refetch();
+    } catch (error) {
+      console.error('Erro ao remover talk da agenda:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível remover a palestra da agenda.',
+        variant: 'destructive',
+      });
+    } finally {
+      setRemovingTalkIds(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(talkDocumentId);
+        return newSet;
+      });
+    }
+  };
 
   if (loading) {
     return (
@@ -141,10 +184,19 @@ export function AgendaDetails({ agendaId }: AgendaDetailsProps) {
                         </div>
                       </div>
                     </div>
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 flex gap-2">
                       <Link href={`/talks/${talk.documentId}`}>
-                        <Button>Ver Detalhes</Button>
+                        <Button variant="outline">Ver Detalhes</Button>
                       </Link>
+                      <Button
+                        variant="outline"
+                        onClick={() => handleRemoveFromAgenda(talk.documentId)}
+                        disabled={removingTalkIds.has(talk.documentId)}
+                        className="border-red-600 text-red-600 hover:bg-red-50"
+                      >
+                        <Minus className="h-4 w-4 mr-2" />
+                        {removingTalkIds.has(talk.documentId) ? 'Removendo...' : 'Remover'}
+                      </Button>
                     </div>
                   </div>
                 </CardContent>

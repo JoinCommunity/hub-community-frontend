@@ -264,3 +264,37 @@ export const GET_AGENDA_BY_ID = gql`
     }
   }
 `;
+
+// Agenda Mutations
+export const CREATE_AGENDA = gql`
+  mutation CreateAgenda($input: AgendaInput!) {
+    createAgenda(input: $input) {
+      documentId
+    }
+  }
+`;
+
+export const UPDATE_AGENDA = gql`
+  mutation UpdateAgenda($updateAgendaId: String!, $input: AgendaUpdateInput!) {
+    updateAgenda(id: $updateAgendaId, input: $input) {
+      documentId
+      event {
+        title
+      }
+    }
+  }
+`;
+
+// Query to get agenda by event ID
+export const GET_AGENDA_BY_EVENT_ID = gql`
+  query GetAgendaByEventId($eventId: String!) {
+    agendas(filters: { event: { documentId: { eq: $eventId } } }) {
+      data {
+        documentId
+        talks {
+          documentId
+        }
+      }
+    }
+  }
+`;
