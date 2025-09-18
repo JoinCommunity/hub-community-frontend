@@ -1,13 +1,22 @@
 'use client';
 
-import { Menu, X } from 'lucide-react';
+import { LogOut, Menu, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
+import { AuthModal } from '@/components/auth-modal';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/auth-context';
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { isAuthenticated, user, signOut } = useAuth();
+
+  const handleSignOut = () => {
+    signOut();
+    setIsMenuOpen(false);
+  };
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -47,15 +56,26 @@ export function Navigation() {
           </div>
 
           {/* Desktop Actions */}
-          {/* <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              <Search className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="sm">
-              <User className="h-4 w-4" />
-            </Button>
-            <Button size="sm">Criar Evento</Button>
-          </div> */}
+          <div className="hidden md:flex items-center space-x-4">
+            {isAuthenticated ? (
+              <>
+                <Link href="/profile">
+                  <Button variant="ghost" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    {user?.name || user?.username || 'Perfil'}
+                  </Button>
+                </Link>
+                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sair
+                </Button>
+              </>
+            ) : (
+              <Button size="sm" onClick={() => setIsAuthModalOpen(true)}>
+                Entrar
+              </Button>
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -98,22 +118,56 @@ export function Navigation() {
               >
                 Sobre
               </Link>
-              <div className="flex space-x-2 pt-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 bg-transparent"
-                >
-                  Login
-                </Button>
-                {/* <Button size="sm" className="flex-1">
-                  Criar Evento
-                </Button> */}
-              </div>
+              {isAuthenticated ? (
+                <div className="flex flex-col space-y-2 pt-4">
+                  <Link href="/profile">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-transparent"
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      {user?.name || user?.username || 'Perfil'}
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full bg-transparent"
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sair
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex space-x-2 pt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 bg-transparent"
+                    onClick={() => {
+                      setIsAuthModalOpen(true);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    Entrar
+                  </Button>
+                  {/* <Button size="sm" className="flex-1">
+                    Criar Evento
+                  </Button> */}
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </nav>
   );
 }

@@ -7,13 +7,17 @@ const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:4000/graphql',
 });
 
-// Middleware para adicionar headers de autenticação se necessário
+// Middleware para adicionar headers de autenticação
 const authLink = setContext((_, { headers }) => {
-  // Aqui você pode adicionar tokens de autenticação se necessário
+  // Get token from localStorage
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+
   return {
     headers: {
       ...headers,
       'Content-Type': 'application/json',
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
     },
   };
 });

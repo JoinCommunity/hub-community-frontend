@@ -127,3 +127,55 @@ export interface TagsResponse {
 export interface EventResponse {
   event: Event;
 }
+
+// Auth Types
+export interface User {
+  id?: string;
+  email: string;
+  username: string;
+  name?: string;
+  avatar?: string;
+}
+
+export interface SignUpInput {
+  email: string;
+  name: string;
+  password: string;
+  username: string;
+}
+
+export interface SignInInput {
+  identifier: string;
+  password: string;
+}
+
+export interface SignInResponse {
+  signIn: {
+    token: string;
+  };
+}
+
+export interface SignUpResponse {
+  signUp: {
+    email: string;
+    username: string;
+  };
+}
+
+export interface ForwardPasswordResponse {
+  forwardPassword: boolean;
+}
+
+export interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+
+export interface AuthContextType extends AuthState {
+  signIn: (input: SignInInput) => Promise<void>;
+  signUp: (input: SignUpInput) => Promise<void>;
+  signOut: () => void;
+  forwardPassword: (email: string) => Promise<void>;
+}

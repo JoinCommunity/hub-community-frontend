@@ -166,3 +166,27 @@ export const GET_EVENT_BY_ID = gql`
     }
   }
 `;
+
+// Authentication Mutations
+export const SIGN_UP = gql`
+  mutation SignUp($input: UserInput!) {
+    signUp(input: $input) {
+      email
+      username
+    }
+  }
+`;
+
+export const SIGN_IN = gql`
+  mutation SignIn($identifier: String!, $password: String!) {
+    signIn(identifier: $identifier, password: $password) {
+      token
+    }
+  }
+`;
+
+export const FORWARD_PASSWORD = gql`
+  mutation ForwardPassword($email: String!) {
+    forwardPassword(email: $email)
+  }
+`;

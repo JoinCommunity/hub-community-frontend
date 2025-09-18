@@ -6,6 +6,7 @@ import { ApolloProviderWrapper } from '@/components/apollo-provider';
 import { FirebaseProvider } from '@/components/firebase-provider';
 import { Footer } from '@/components/footer';
 import { Navigation } from '@/components/navigation';
+import { AuthProvider } from '@/contexts/auth-context';
 import { FilterProvider } from '@/contexts/filter-context';
 import './globals.css';
 
@@ -28,11 +29,13 @@ export default function RootLayout({
       <body className={inter.className}>
         <FirebaseProvider>
           <ApolloProviderWrapper>
-            <FilterProvider>
-              <Navigation />
-              {children}
-              <Footer />
-            </FilterProvider>
+            <AuthProvider>
+              <FilterProvider>
+                <Navigation />
+                {children}
+                <Footer />
+              </FilterProvider>
+            </AuthProvider>
           </ApolloProviderWrapper>
         </FirebaseProvider>
       </body>
