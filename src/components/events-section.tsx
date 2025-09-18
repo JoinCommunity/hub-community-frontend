@@ -102,7 +102,7 @@ export function EventsSection({
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30"></div>
             <div className="absolute top-4 left-4">
               <Badge className="bg-blue-600 text-white">
-                {event.communities[0].title}
+                {event.communities[0]?.title || 'Comunidade'}
               </Badge>
             </div>
 
