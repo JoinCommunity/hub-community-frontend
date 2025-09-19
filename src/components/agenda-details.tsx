@@ -26,6 +26,7 @@ export function AgendaDetails({ agendaId }: AgendaDetailsProps) {
     GET_AGENDA_BY_ID,
     {
       variables: { agendaId },
+      fetchPolicy: 'network-only',
     }
   );
 
