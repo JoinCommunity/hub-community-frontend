@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { useFilters } from '@/contexts/filter-context';
 import { CREATE_AGENDA, GET_EVENTS } from '@/lib/queries';
 import { Event, EventsResponse } from '@/lib/types';
+import { adjustToBrazilTimezone } from '@/utils/event';
 
 export function EventsSection({
   onCountChange,
@@ -63,7 +64,9 @@ export function EventsSection({
 
   // Helper function to check if event is in user's agenda
   const isEventInAgenda = (event: Event) => {
-    return agendas.some(agenda => agenda.event.documentId === event.documentId);
+    return agendas.some(
+      agenda => agenda.event?.documentId === event.documentId
+    );
   };
 
   // Helper function to handle agenda creation
@@ -169,7 +172,9 @@ export function EventsSection({
                 <Calendar className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-600">
                   {typeof event.start_date === 'string'
-                    ? new Date(event.start_date).toLocaleDateString('pt-BR')
+                    ? adjustToBrazilTimezone(
+                        new Date(event.start_date)
+                      ).toLocaleDateString('pt-BR')
                     : 'Data não disponível'}
                 </span>
               </div>
@@ -177,7 +182,9 @@ export function EventsSection({
                 <Clock className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-600">
                   {typeof event.start_date === 'string'
-                    ? new Date(event.start_date).toLocaleTimeString('pt-BR', {
+                    ? adjustToBrazilTimezone(
+                        new Date(event.start_date)
+                      ).toLocaleTimeString('pt-BR', {
                         hour: '2-digit',
                         minute: '2-digit',
                       })

@@ -10,6 +10,7 @@ import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { useAuth } from '@/contexts/auth-context';
 import { GET_TALK_BY_ID } from '@/lib/queries';
 import { TalkResponse } from '@/lib/types';
+import { adjustToBrazilTimezone } from '@/utils/event';
 import { useRef } from 'react';
 
 interface TalkDetailsProps {
@@ -121,8 +122,8 @@ export function TalkDetails({ talkId }: TalkDetailsProps) {
   }
 
   const event = talk.event;
-  const eventStartDate = new Date(event.start_date);
-  const eventEndDate = new Date(event.end_date);
+  const eventStartDate = adjustToBrazilTimezone(new Date(event.start_date));
+  const eventEndDate = adjustToBrazilTimezone(new Date(event.end_date));
 
   return (
     <div className="min-h-screen bg-gray-50">

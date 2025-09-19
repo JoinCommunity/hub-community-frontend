@@ -13,7 +13,7 @@ import { useFilters } from '@/contexts/filter-context';
 import { GET_COMMUNITIES } from '@/lib/queries';
 import { CommunitiesResponse, Community, Tag } from '@/lib/types';
 
-import { getNextFutureEvents } from '../utils/event';
+import { adjustToBrazilTimezone, getNextFutureEvents } from '../utils/event';
 
 export function CommunityGrid({
   onCountChange,
@@ -153,9 +153,9 @@ export function CommunityGrid({
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Calendar className="h-4 w-4" />
                   Próximo evento:{' '}
-                  {new Date(nextFutureEvents[0].start_date).toLocaleDateString(
-                    'pt-BR'
-                  )}
+                  {adjustToBrazilTimezone(
+                    new Date(nextFutureEvents[0].start_date)
+                  ).toLocaleDateString('pt-BR')}
                 </div>
               )}
             </div>

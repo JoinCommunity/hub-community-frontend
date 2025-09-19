@@ -12,6 +12,7 @@ import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { useFilters } from '@/contexts/filter-context';
 import { GET_EVENTS } from '@/lib/queries';
 import { Event, EventsResponse } from '@/lib/types';
+import { adjustToBrazilTimezone } from '@/utils/event';
 
 export function PastEventsSection() {
   const { debouncedSearchTerm } = useFilters();
@@ -116,7 +117,9 @@ export function PastEventsSection() {
                 <Calendar className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-600">
                   {typeof event.start_date === 'string'
-                    ? new Date(event.start_date).toLocaleDateString('pt-BR')
+                    ? adjustToBrazilTimezone(
+                        new Date(event.start_date)
+                      ).toLocaleDateString('pt-BR')
                     : 'Data não disponível'}
                 </span>
               </div>
@@ -124,7 +127,9 @@ export function PastEventsSection() {
                 <Clock className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-600">
                   {typeof event.start_date === 'string'
-                    ? new Date(event.start_date).toLocaleTimeString('pt-BR', {
+                    ? adjustToBrazilTimezone(
+                        new Date(event.start_date)
+                      ).toLocaleTimeString('pt-BR', {
                         hour: '2-digit',
                         minute: '2-digit',
                       })

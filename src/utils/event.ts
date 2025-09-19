@@ -1,5 +1,13 @@
 import { Event } from '../lib/types';
 
+// Function to adjust date to Brazil timezone (+3 hours)
+export const adjustToBrazilTimezone = (date: Date): Date => {
+  // Create a new date object and add 3 hours
+  const adjustedDate = new Date(date);
+  adjustedDate.setHours(adjustedDate.getHours() + 3);
+  return adjustedDate;
+};
+
 // Function to validate if event start date is ahead of current date
 export const isEventInFuture = (startDate: string): boolean => {
   try {

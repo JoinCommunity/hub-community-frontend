@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { GET_AGENDA_BY_ID, UPDATE_AGENDA } from '@/lib/queries';
 import { AgendaDetailResponse } from '@/lib/types';
+import { adjustToBrazilTimezone } from '@/utils/event';
 
 interface AgendaDetailsProps {
   agendaId: string;
@@ -17,7 +18,9 @@ interface AgendaDetailsProps {
 
 export function AgendaDetails({ agendaId }: AgendaDetailsProps) {
   const { toast } = useToast();
-  const [removingTalkIds, setRemovingTalkIds] = useState<Set<string>>(new Set());
+  const [removingTalkIds, setRemovingTalkIds] = useState<Set<string>>(
+    new Set()
+  );
 
   const { data, loading, error, refetch } = useQuery<AgendaDetailResponse>(
     GET_AGENDA_BY_ID,
@@ -165,21 +168,20 @@ export function AgendaDetails({ agendaId }: AgendaDetailsProps) {
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4" />
                           <span>
-                            {new Date(talk.occur_date).toLocaleDateString(
-                              'pt-BR'
-                            )}
+                            {adjustToBrazilTimezone(
+                              new Date(talk.occur_date)
+                            ).toLocaleDateString('pt-BR')}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4" />
                           <span>
-                            {new Date(talk.occur_date).toLocaleTimeString(
-                              'pt-BR',
-                              {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              }
-                            )}
+                            {adjustToBrazilTimezone(
+                              new Date(talk.occur_date)
+                            ).toLocaleTimeString('pt-BR', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
                           </span>
                         </div>
                       </div>
@@ -195,7 +197,9 @@ export function AgendaDetails({ agendaId }: AgendaDetailsProps) {
                         className="border-red-600 text-red-600 hover:bg-red-50"
                       >
                         <Minus className="h-4 w-4 mr-2" />
-                        {removingTalkIds.has(talk.documentId) ? 'Removendo...' : 'Remover'}
+                        {removingTalkIds.has(talk.documentId)
+                          ? 'Removendo...'
+                          : 'Remover'}
                       </Button>
                     </div>
                   </div>

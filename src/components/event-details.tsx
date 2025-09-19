@@ -21,6 +21,7 @@ import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { useAuth } from '@/contexts/auth-context';
 import { GET_AGENDA_BY_EVENT_ID, GET_EVENT_BY_ID } from '@/lib/queries';
 import { EventResponse } from '@/lib/types';
+import { adjustToBrazilTimezone } from '@/utils/event';
 
 interface EventDetailsProps {
   eventId: string;
@@ -153,8 +154,8 @@ export function EventDetails({ eventId }: EventDetailsProps) {
     );
   }
 
-  const startDate = new Date(event.start_date);
-  const endDate = new Date(event.end_date);
+  const startDate = adjustToBrazilTimezone(new Date(event.start_date));
+  const endDate = adjustToBrazilTimezone(new Date(event.end_date));
   const isMultiDay = startDate.toDateString() !== endDate.toDateString();
 
   return (

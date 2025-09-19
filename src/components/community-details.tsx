@@ -21,7 +21,11 @@ import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { GET_COMMUNITY_BY_ID } from '@/lib/queries';
 import { CommunityResponse } from '@/lib/types';
 
-import { getNextFutureEvents, getPastEvents } from '../utils/event';
+import {
+  adjustToBrazilTimezone,
+  getNextFutureEvents,
+  getPastEvents,
+} from '../utils/event';
 
 import { RichText } from './ui/rich-text';
 
@@ -216,10 +220,13 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                         <div>
                           <h4 className="font-semibold">{event.title}</h4>
                           <p className="text-sm text-gray-600">
-                            {new Date(event.start_date).toLocaleDateString(
-                              'pt-BR',
-                              { day: '2-digit', month: 'long', year: 'numeric' }
-                            )}
+                            {adjustToBrazilTimezone(
+                              new Date(event.start_date)
+                            ).toLocaleDateString('pt-BR', {
+                              day: '2-digit',
+                              month: 'long',
+                              year: 'numeric',
+                            })}
                           </p>
                           {!!event.talks?.length && (
                             <p className="text-sm text-gray-600">
@@ -259,10 +266,13 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                         <div>
                           <h4 className="font-semibold">{event.title}</h4>
                           <p className="text-sm text-gray-600">
-                            {new Date(event.start_date).toLocaleDateString(
-                              'pt-BR',
-                              { day: '2-digit', month: 'long', year: 'numeric' }
-                            )}
+                            {adjustToBrazilTimezone(
+                              new Date(event.start_date)
+                            ).toLocaleDateString('pt-BR', {
+                              day: '2-digit',
+                              month: 'long',
+                              year: 'numeric',
+                            })}
                           </p>
                           {!!event.talks?.length && (
                             <p className="text-sm text-gray-600">
