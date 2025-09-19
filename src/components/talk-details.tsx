@@ -2,11 +2,15 @@
 
 import { useQuery } from '@apollo/client';
 
+import { CommentForm } from '@/components/comment-form';
+import { CommentsList } from '@/components/comments-list';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
+import { useAuth } from '@/contexts/auth-context';
 import { GET_TALK_BY_ID } from '@/lib/queries';
 import { TalkResponse } from '@/lib/types';
+import { useRef } from 'react';
 
 interface TalkDetailsProps {
   talkId: string;
@@ -63,6 +67,8 @@ export function TalkDetails({ talkId }: TalkDetailsProps) {
   const { data, loading, error } = useQuery<TalkResponse>(GET_TALK_BY_ID, {
     variables: { talkId },
   });
+  const { isAuthenticated } = useAuth();
+  const commentsRef = useRef<{ refetch: () => void } | null>(null);
 
   if (loading) {
     return (
@@ -338,6 +344,51 @@ export function TalkDetails({ talkId }: TalkDetailsProps) {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Comments Section */}
+        <div className="bg-white rounded-lg shadow-sm p-8 mt-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+            Comentários
+          </h2>
+
+          {/* Comments List */}
+          <div className="mb-8">
+            <CommentsList ref={commentsRef} talkId={talkId} />
+          </div>
+
+          {/* Comment Form - Only for authenticated users */}
+          {isAuthenticated ? (
+            <CommentForm
+              talkId={talkId}
+              refetchComments={() => commentsRef.current?.refetch()}
+            />
+          ) : (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+              <div className="text-blue-800 mb-4">
+                <svg
+                  className="mx-auto h-12 w-12 text-blue-400 mb-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+                <h3 className="text-lg font-medium mb-2">
+                  Faça login para comentar
+                </h3>
+                <p className="text-sm">
+                  Você precisa estar logado para deixar comentários nesta
+                  palestra.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

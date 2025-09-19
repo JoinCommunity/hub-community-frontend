@@ -229,3 +229,44 @@ export interface AgendaContextType {
   isLoading: boolean;
   refetchAgendas: () => Promise<void>;
 }
+
+// Comment Types
+export interface CommentNode {
+  type: 'text' | 'paragraph' | 'heading' | 'list' | 'list-item' | 'quote';
+  text?: string;
+  children?: CommentNode[];
+  level?: number;
+}
+
+export interface CommentData {
+  type: 'paragraph' | 'heading' | 'list' | 'quote';
+  children: CommentNode[];
+}
+
+export interface Comment {
+  id?: string;
+  comment: CommentData[];
+  talk?: {
+    title: string;
+  };
+  user?: {
+    username: string;
+  };
+}
+
+export interface CommentInput {
+  talk_id: string;
+  comment: CommentData[];
+}
+
+export interface CreateCommentResponse {
+  createComment: {
+    comment: CommentData[];
+  };
+}
+
+export interface CommentsResponse {
+  comments: {
+    data: Comment[];
+  };
+}

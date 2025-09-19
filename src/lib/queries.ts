@@ -298,3 +298,31 @@ export const GET_AGENDA_BY_EVENT_ID = gql`
     }
   }
 `;
+
+// Comment Queries and Mutations
+export const CREATE_COMMENT = gql`
+  mutation CreateComment($input: CommentInput!) {
+    createComment(input: $input) {
+      comment
+    }
+  }
+`;
+
+export const GET_COMMENTS = gql`
+  query GetComments($talkId: String!) {
+    comments(
+      filters: { talk: { documentId: { eq: $talkId } } }
+      populate: ["talk", "user_creator"]
+    ) {
+      data {
+        comment
+        talk {
+          title
+        }
+        user {
+          username
+        }
+      }
+    }
+  }
+`;
