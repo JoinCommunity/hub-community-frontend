@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { useToast } from '@/hooks/use-toast';
+import { trackCommentSent } from '@/lib/analytics';
 import { CREATE_COMMENT } from '@/lib/queries';
 import { CommentData, CreateCommentResponse } from '@/lib/types';
 import { useMutation } from '@apollo/client';
@@ -28,6 +29,9 @@ export function CommentForm({
     CREATE_COMMENT,
     {
       onCompleted: () => {
+        // Track analytics event
+        trackCommentSent(talkId);
+
         toast({
           title: 'Comentário enviado!',
           description: 'Seu comentário foi publicado com sucesso.',

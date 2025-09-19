@@ -9,6 +9,7 @@ export const ANALYTICS_EVENTS = {
   VIEW_EVENT_DETAIL: 'view_event_detail',
   VIEW_TALK_DETAIL: 'view_talk_detail',
   VIEW_AGENDA_DETAIL: 'view_agenda_detail',
+  SEND_COMMENT: 'send_comment',
 } as const;
 
 // Analytics utility functions
@@ -63,5 +64,11 @@ export const trackViewTalkDetail = (talkId: string, eventId?: string) => {
 export const trackViewAgendaDetail = (agendaId: string) => {
   trackEvent(ANALYTICS_EVENTS.VIEW_AGENDA_DETAIL, {
     agenda_id: agendaId,
+  });
+};
+
+export const trackCommentSent = (talkId: string) => {
+  trackEvent(ANALYTICS_EVENTS.SEND_COMMENT, {
+    talk_id: talkId,
   });
 };
