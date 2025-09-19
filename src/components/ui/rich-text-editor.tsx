@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { CommentData } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface RichTextEditorProps {
   value: CommentData[];
@@ -28,18 +28,27 @@ export function RichTextEditor({
       .join('\n\n');
   });
 
+  // Sync textValue when value prop changes (e.g., when form is reset)
+  useEffect(() => {
+    const newTextValue = value
+      .map(block => block.children.map(child => child.text || '').join(''))
+      .join('\n\n');
+    setTextValue(newTextValue);
+  }, [value]);
+
   const handleTextChange = useCallback(
     (text: string) => {
       setTextValue(text);
 
       // Convert plain text to CommentData[] format
-      const paragraphs = text.split('\n\n').filter(p => p.trim());
+      // Always create at least one paragraph, even for empty text
+      const paragraphs = text === '' ? [''] : text.split('\n\n');
       const commentData: CommentData[] = paragraphs.map(paragraph => ({
         type: 'paragraph',
         children: [
           {
             type: 'text',
-            text: paragraph.trim(),
+            text: paragraph,
           },
         ],
       }));
