@@ -9,6 +9,11 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import {
+  trackAddTalkToAgenda,
+  trackCreateAgenda,
+  trackRemoveTalkFromAgenda,
+} from '@/lib/analytics';
 import { CREATE_AGENDA, UPDATE_AGENDA } from '@/lib/queries';
 import { Talk } from '@/lib/types';
 import { adjustToBrazilTimezone } from '@/utils/event';
@@ -55,6 +60,9 @@ export function TalkCard({
         });
 
         if (createData?.createAgenda?.documentId) {
+          // Track analytics event for creating agenda
+          trackCreateAgenda(eventDocumentId!);
+
           // Adicionar talk à agenda recém-criada
           await updateAgenda({
             variables: {
@@ -79,6 +87,9 @@ export function TalkCard({
 
       // Update optimistically
       onOptimisticUpdate?.(talk.documentId, true);
+
+      // Track analytics event
+      trackAddTalkToAgenda(talk.documentId!, eventDocumentId!);
 
       toast({
         title: 'Talk adicionada à agenda',
@@ -114,6 +125,9 @@ export function TalkCard({
 
       // Update optimistically
       onOptimisticUpdate?.(talk.documentId, false);
+
+      // Track analytics event
+      trackRemoveTalkFromAgenda(talk.documentId!, eventDocumentId!);
 
       toast({
         title: 'Talk removida da agenda',

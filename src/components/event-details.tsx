@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { TalkCard } from '@/components/talk-card';
 import { Button } from '@/components/ui/button';
@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/auth-context';
+import { trackViewEventDetail } from '@/lib/analytics';
 import { GET_AGENDA_BY_EVENT_ID, GET_EVENT_BY_ID } from '@/lib/queries';
 import { EventResponse } from '@/lib/types';
 import { adjustToBrazilTimezone } from '@/utils/event';
@@ -33,6 +34,11 @@ export function EventDetails({ eventId }: EventDetailsProps) {
   const [optimisticAgendaTalks, setOptimisticAgendaTalks] = useState<
     Set<string>
   >(new Set());
+
+  // Track event detail view
+  useEffect(() => {
+    trackViewEventDetail(eventId);
+  }, [eventId]);
 
   const { data, loading, error } = useQuery<EventResponse>(GET_EVENT_BY_ID, {
     variables: { eventId },

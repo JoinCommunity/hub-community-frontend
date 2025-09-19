@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@apollo/client';
+import { useEffect } from 'react';
 
 import { CommentForm } from '@/components/comment-form';
 import { CommentsList } from '@/components/comments-list';
@@ -8,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
 import { useAuth } from '@/contexts/auth-context';
+import { trackViewTalkDetail } from '@/lib/analytics';
 import { GET_TALK_BY_ID } from '@/lib/queries';
 import { TalkResponse } from '@/lib/types';
 import { adjustToBrazilTimezone } from '@/utils/event';
@@ -70,6 +72,13 @@ export function TalkDetails({ talkId }: TalkDetailsProps) {
   });
   const { isAuthenticated } = useAuth();
   const commentsRef = useRef<{ refetch: () => void } | null>(null);
+
+  // Track talk detail view
+  useEffect(() => {
+    if (data?.talk) {
+      trackViewTalkDetail(talkId, data.talk.event?.id);
+    }
+  }, [talkId, data?.talk]);
 
   if (loading) {
     return (

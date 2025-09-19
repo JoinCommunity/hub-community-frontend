@@ -3,11 +3,12 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { Calendar, Clock, Minus } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { trackViewAgendaDetail } from '@/lib/analytics';
 import { GET_AGENDA_BY_ID, UPDATE_AGENDA } from '@/lib/queries';
 import { AgendaDetailResponse } from '@/lib/types';
 import { adjustToBrazilTimezone } from '@/utils/event';
@@ -21,6 +22,11 @@ export function AgendaDetails({ agendaId }: AgendaDetailsProps) {
   const [removingTalkIds, setRemovingTalkIds] = useState<Set<string>>(
     new Set()
   );
+
+  // Track agenda detail view
+  useEffect(() => {
+    trackViewAgendaDetail(agendaId);
+  }, [agendaId]);
 
   const { data, loading, error, refetch } = useQuery<AgendaDetailResponse>(
     GET_AGENDA_BY_ID,
