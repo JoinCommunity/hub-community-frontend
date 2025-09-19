@@ -153,6 +153,7 @@ export const GET_EVENT_BY_ID = gql`
         description
         room_description
         highlight
+        occur_date
         speakers {
           id
           name

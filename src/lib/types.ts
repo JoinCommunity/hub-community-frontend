@@ -68,6 +68,7 @@ export interface Talk {
   description?: string | BlocksContent;
   room_description?: string;
   highlight?: boolean;
+  occur_date?: string;
   speakers: Speaker[];
 }
 

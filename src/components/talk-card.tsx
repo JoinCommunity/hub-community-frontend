@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation } from '@apollo/client';
-import { ExternalLink, MapPin, Minus, Plus } from 'lucide-react';
+import { Clock, ExternalLink, MapPin, Minus, Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { CREATE_AGENDA, UPDATE_AGENDA } from '@/lib/queries';
 import { Talk } from '@/lib/types';
+import { adjustToBrazilTimezone } from '@/utils/event';
 
 interface TalkCardProps {
   talk: Talk;
@@ -138,59 +139,74 @@ export function TalkCard({
         talk.highlight ? 'border-blue-200 bg-blue-50' : ''
       }`}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <h4 className="font-semibold">
-              {typeof talk.title === 'string'
-                ? talk.title
-                : 'Título não disponível'}
-            </h4>
-            {talk.highlight && (
-              <Badge variant="default" className="bg-blue-600">
-                Destaque
-              </Badge>
-            )}
-          </div>
-          {talk.description && typeof talk.description === 'string' && (
-            <p className="text-sm text-gray-600 mb-3">{talk.description}</p>
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <h4 className="font-semibold">
+            {typeof talk.title === 'string'
+              ? talk.title
+              : 'Título não disponível'}
+          </h4>
+          {talk.highlight && (
+            <Badge variant="default" className="bg-blue-600">
+              Destaque
+            </Badge>
           )}
-          {talk.room_description &&
-            typeof talk.room_description === 'string' && (
-              <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                <MapPin className="h-4 w-4" />
-                <span>{talk.room_description}</span>
-              </div>
-            )}
-          {talk.speakers &&
-            Array.isArray(talk.speakers) &&
-            talk.speakers.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {talk.speakers.map(speaker => (
-                  <div key={speaker.id} className="flex items-center gap-2">
-                    <Image
-                      src={speaker.avatar || '/placeholder-user.jpg'}
-                      alt={
-                        typeof speaker.name === 'string'
-                          ? speaker.name
-                          : 'Speaker'
-                      }
-                      width={24}
-                      height={24}
-                      className="w-6 h-6 rounded-full object-cover"
-                      unoptimized
-                    />
-                    <span className="text-sm font-medium">
-                      {typeof speaker.name === 'string'
-                        ? speaker.name
-                        : 'Speaker'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
         </div>
-        <div className="ml-4 flex-shrink-0 flex flex-col gap-2">
+
+        {talk.occur_date && (
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <Clock className="h-4 w-4" />
+            <span>
+              {adjustToBrazilTimezone(
+                new Date(talk.occur_date)
+              ).toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
+          </div>
+        )}
+
+        {talk.description && typeof talk.description === 'string' && (
+          <p className="text-sm text-gray-600">{talk.description}</p>
+        )}
+
+        {talk.room_description && typeof talk.room_description === 'string' && (
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <MapPin className="h-4 w-4" />
+            <span>{talk.room_description}</span>
+          </div>
+        )}
+
+        {talk.speakers &&
+          Array.isArray(talk.speakers) &&
+          talk.speakers.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {talk.speakers.map(speaker => (
+                <div key={speaker.id} className="flex items-center gap-2">
+                  <Image
+                    src={speaker.avatar || '/placeholder-user.jpg'}
+                    alt={
+                      typeof speaker.name === 'string'
+                        ? speaker.name
+                        : 'Speaker'
+                    }
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 rounded-full object-cover"
+                    unoptimized
+                  />
+                  <span className="text-sm font-medium">
+                    {typeof speaker.name === 'string'
+                      ? speaker.name
+                      : 'Speaker'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+        <div className="flex flex-wrap gap-2 pt-2 border-t">
           {talk.documentId && (
             <Link href={`/talks/${talk.documentId}`}>
               <Button

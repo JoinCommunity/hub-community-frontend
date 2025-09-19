@@ -18,6 +18,7 @@ import { TalkCard } from '@/components/talk-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ExpandableRichText } from '@/components/ui/expandable-rich-text';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/auth-context';
 import { GET_AGENDA_BY_EVENT_ID, GET_EVENT_BY_ID } from '@/lib/queries';
 import { EventResponse } from '@/lib/types';
@@ -158,6 +159,40 @@ export function EventDetails({ eventId }: EventDetailsProps) {
   const endDate = adjustToBrazilTimezone(new Date(event.end_date));
   const isMultiDay = startDate.toDateString() !== endDate.toDateString();
 
+  // Group talks by day and then by time
+  const talksByDay =
+    event.talks?.reduce(
+      (acc, talk) => {
+        if (!talk.occur_date) return acc;
+
+        const talkDate = adjustToBrazilTimezone(new Date(talk.occur_date));
+        const dateKey = talkDate.toLocaleDateString('pt-BR');
+        const timeKey = talkDate.toLocaleTimeString('pt-BR', {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+
+        if (!acc[dateKey]) {
+          acc[dateKey] = {};
+        }
+        if (!acc[dateKey][timeKey]) {
+          acc[dateKey][timeKey] = [];
+        }
+        acc[dateKey][timeKey].push(talk);
+        return acc;
+      },
+      {} as Record<string, Record<string, typeof event.talks>>
+    ) || {};
+
+  // Sort date keys chronologically
+  const sortedDateKeys = Object.keys(talksByDay).sort((a, b) => {
+    const [aDay, aMonth, aYear] = a.split('/').map(Number);
+    const [bDay, bMonth, bYear] = b.split('/').map(Number);
+    const dateA = new Date(aYear, aMonth - 1, aDay);
+    const dateB = new Date(bYear, bMonth - 1, bDay);
+    return dateA.getTime() - dateB.getTime();
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -280,28 +315,87 @@ export function EventDetails({ eventId }: EventDetailsProps) {
                 <CardTitle>Programação</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {event.talks &&
-                  Array.isArray(event.talks) &&
-                  event.talks.length > 0 ? (
-                    event.talks.map(talk => (
-                      <TalkCard
-                        key={talk.documentId}
-                        talk={talk}
-                        eventDocumentId={event.documentId}
-                        agendaDocumentId={agenda?.documentId}
-                        isInAgenda={isTalkInAgenda(talk.documentId)}
-                        onAgendaChange={handleAgendaChange}
-                        onOptimisticUpdate={handleOptimisticUpdate}
-                        showAgendaActions={isAuthenticated}
-                      />
-                    ))
+                {event.talks &&
+                Array.isArray(event.talks) &&
+                event.talks.length > 0 ? (
+                  sortedDateKeys.length > 0 ? (
+                    <div className="space-y-8">
+                      {sortedDateKeys.map(dateKey => {
+                        const talksByTime = talksByDay[dateKey];
+                        const sortedTimeKeys = Object.keys(talksByTime).sort(
+                          (a, b) => {
+                            const [aHour, aMin] = a.split(':').map(Number);
+                            const [bHour, bMin] = b.split(':').map(Number);
+                            return aHour * 60 + aMin - (bHour * 60 + bMin);
+                          }
+                        );
+
+                        return (
+                          <div key={dateKey} className="space-y-4">
+                            <h3 className="text-xl font-semibold text-gray-900 border-b pb-2">
+                              {dateKey}
+                            </h3>
+                            <Tabs
+                              defaultValue={sortedTimeKeys[0]}
+                              className="w-full"
+                            >
+                              <TabsList className="flex w-full overflow-x-auto">
+                                {sortedTimeKeys.map(timeKey => (
+                                  <TabsTrigger key={timeKey} value={timeKey}>
+                                    {timeKey}
+                                  </TabsTrigger>
+                                ))}
+                              </TabsList>
+                              {sortedTimeKeys.map(timeKey => (
+                                <TabsContent
+                                  key={timeKey}
+                                  value={timeKey}
+                                  className="space-y-4 mt-6"
+                                >
+                                  {talksByTime[timeKey]?.map(talk => (
+                                    <TalkCard
+                                      key={talk.documentId}
+                                      talk={talk}
+                                      eventDocumentId={event.documentId}
+                                      agendaDocumentId={agenda?.documentId}
+                                      isInAgenda={isTalkInAgenda(
+                                        talk.documentId
+                                      )}
+                                      onAgendaChange={handleAgendaChange}
+                                      onOptimisticUpdate={
+                                        handleOptimisticUpdate
+                                      }
+                                      showAgendaActions={isAuthenticated}
+                                    />
+                                  ))}
+                                </TabsContent>
+                              ))}
+                            </Tabs>
+                          </div>
+                        );
+                      })}
+                    </div>
                   ) : (
-                    <p className="text-gray-500 text-center py-8">
-                      Programação ainda não divulgada.
-                    </p>
-                  )}
-                </div>
+                    <div className="space-y-4">
+                      {event.talks.map(talk => (
+                        <TalkCard
+                          key={talk.documentId}
+                          talk={talk}
+                          eventDocumentId={event.documentId}
+                          agendaDocumentId={agenda?.documentId}
+                          isInAgenda={isTalkInAgenda(talk.documentId)}
+                          onAgendaChange={handleAgendaChange}
+                          onOptimisticUpdate={handleOptimisticUpdate}
+                          showAgendaActions={isAuthenticated}
+                        />
+                      ))}
+                    </div>
+                  )
+                ) : (
+                  <p className="text-gray-500 text-center py-8">
+                    Programação ainda não divulgada.
+                  </p>
+                )}
               </CardContent>
             </Card>
 
