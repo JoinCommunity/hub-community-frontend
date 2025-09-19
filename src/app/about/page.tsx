@@ -167,7 +167,7 @@ export default function AboutPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Image
-                  src="https://media.licdn.com/dms/image/v2/D4D03AQExW-3yCp1-dA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1730223158826?e=1757548800&v=beta&t=0C-JBO7H6bWXzJOiIAgbC0gzFbCj_upLKA-rHig48fk"
+                  src="https://hubcommunity-manager.8020digital.com.br/uploads/1730223158826_1b30749fc2.jpeg"
                   alt="Pedro Goiânia"
                   width={96}
                   height={96}
@@ -247,7 +247,7 @@ export default function AboutPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Image
-                  src="https://media.licdn.com/dms/image/v2/D4D03AQEvH3OwYYchVQ/profile-displayphoto-shrink_400_400/B4DZVE_NNEHYAo-/0/1740619175287?e=1757548800&v=beta&t=OhyqVh1OPTUbGlvyxXIzNJ2Y0B3LYV-riJJxlzG0vbo"
+                  src="https://hubcommunity-manager.8020digital.com.br/uploads/1740619175287_b13423c1ca.jpeg"
                   alt="Marcus Vinícius"
                   width={96}
                   height={96}
