@@ -95,11 +95,13 @@ export function PastEventsSection() {
               unoptimized
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30"></div>
-            <div className="absolute top-4 left-4">
-              <Badge className="bg-gray-600 text-white">
-                {event.communities[0].title}
-              </Badge>
-            </div>
+            {event.communities && event.communities.length > 0 && (
+              <div className="absolute top-4 left-4">
+                <Badge className="bg-gray-600 text-white">
+                  {event.communities[0].title}
+                </Badge>
+              </div>
+            )}
 
             <div className="absolute bottom-4 left-4 text-white">
               <h3 className="text-2xl font-bold mb-2">
