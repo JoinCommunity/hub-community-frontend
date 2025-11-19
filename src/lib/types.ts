@@ -36,6 +36,7 @@ export interface Organizer {
   id: string;
   username: string;
   email: string;
+  name: string;
   avatar?: string;
   role?: string;
 }
@@ -47,7 +48,7 @@ export interface Tag {
 
 export interface Link {
   id: string;
-  title: string;
+  name: string;
   url: string;
   social_media: string;
 }

@@ -297,7 +297,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
             </Card>
 
             {/* Organizers */}
-            {/*  <Card>
+            <Card>
               <CardHeader>
                 <CardTitle>Organizadores</CardTitle>
               </CardHeader>
@@ -308,14 +308,14 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                       key={organizer.id}
                       className="flex items-center gap-3 p-3 border rounded-lg"
                     >
-                      <Image
+                      {/* <Image
                         src={organizer.avatar || '/placeholder.svg'}
                         alt={organizer.username}
                         width={48}
                         height={48}
                         className="w-12 h-12 rounded-full object-cover"
                         unoptimized
-                      />
+                      /> */}
                       <div>
                         <h4 className="font-semibold">{organizer.username}</h4>
                         <p className="text-sm text-gray-600">
@@ -326,7 +326,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                   ))}
                 </div>
               </CardContent>
-            </Card> */}
+            </Card>
           </div>
 
           {/* Sidebar */}
@@ -340,7 +340,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                 {/* Social Media Links */}
                 {['whatsapp', 'instagram', 'linkedin', 'web'].map(media => {
                   const found = community.links?.find(
-                    link => link.social_media === media
+                    link => link.name.toLowerCase() === media
                   );
                   let Icon;
                   switch (media) {
@@ -370,16 +370,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                       <Icon className="h-4 w-4" />
                       {media.charAt(0).toUpperCase() + media.slice(1)}
                     </a>
-                  ) : (
-                    <div
-                      key={media}
-                      className="flex items-center gap-2 text-gray-400"
-                    >
-                      <Icon className="h-4 w-4" />
-                      {media.charAt(0).toUpperCase() + media.slice(1)}
-                      <span className="italic">(vazio)</span>
-                    </div>
-                  );
+                  ) : null;
                 })}
               </CardContent>
             </Card>

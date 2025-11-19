@@ -59,6 +59,7 @@ export const GET_COMMUNITY_BY_ID = gql`
       }
       links {
         id
+        name
         url
       }
     }
