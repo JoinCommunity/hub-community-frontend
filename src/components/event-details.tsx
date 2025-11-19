@@ -202,7 +202,7 @@ export function EventDetails({ eventId }: EventDetailsProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-96 bg-gradient-to-r from-blue-600 to-purple-700">
+      <div className="relative min-h-64 md:min-h-80 lg:min-h-96 bg-gradient-to-r from-blue-600 to-purple-700">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-30"
           style={{
@@ -211,13 +211,13 @@ export function EventDetails({ eventId }: EventDetailsProps) {
         ></div>
         <div className="absolute inset-0 bg-black/40"></div>
 
-        <div className="relative container mx-auto px-4 h-full flex items-center">
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-4 h-full flex items-center py-8 md:py-12">
           <div className="text-white max-w-4xl">
-            <h1 className="text-5xl font-bold mb-4">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               {typeof event.title === 'string' ? event.title : 'Evento'}
             </h1>
 
-            <div className="flex flex-wrap gap-6 mb-6">
+            <div className="flex flex-wrap gap-4 md:gap-6 mb-6">
               <div className="flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
                 <span>
@@ -241,12 +241,24 @@ export function EventDetails({ eventId }: EventDetailsProps) {
               <div className="flex items-center gap-2">
                 <Clock className="h-5 w-5" />
                 <span>
+                  {startDate.toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: '2-digit',
+                  })}
+                  {' - '}
                   {startDate.toLocaleTimeString('pt-BR', {
                     hour: '2-digit',
                     minute: '2-digit',
                   })}
                   {isMultiDay && (
                     <>
+                      {' até '}
+                      {endDate.toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit',
+                      })}
                       {' - '}
                       {endDate.toLocaleTimeString('pt-BR', {
                         hour: '2-digit',
@@ -271,10 +283,10 @@ export function EventDetails({ eventId }: EventDetailsProps) {
                 )}
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100"
+                className="bg-white text-blue-600 hover:bg-gray-100 w-full sm:w-auto"
               >
                 <Calendar className="h-4 w-4 mr-2" />
                 Participar do Evento
@@ -282,7 +294,7 @@ export function EventDetails({ eventId }: EventDetailsProps) {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
+                className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent w-full sm:w-auto"
                 onClick={() => {
                   navigator.share({
                     title: `Confira o evento ${typeof event.title === 'string' ? event.title : 'Evento'}\n`,
