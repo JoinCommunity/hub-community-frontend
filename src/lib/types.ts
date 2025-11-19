@@ -190,6 +190,7 @@ export interface AuthContextType extends AuthState {
   signUp: (input: SignUpInput) => Promise<void>;
   signOut: () => void;
   forwardPassword: (email: string) => Promise<void>;
+  validateToken: () => boolean;
 }
 
 // Agenda Types

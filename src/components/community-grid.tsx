@@ -30,6 +30,7 @@ export function CommunityGrid({
           ? { title: { contains: debouncedSearchTerm } }
           : {},
       },
+      fetchPolicy: 'network-only',
     }
   );
 
@@ -91,8 +92,8 @@ export function CommunityGrid({
             <div className="relative overflow-hidden rounded-t-lg">
               <Image
                 src={
-                  Array.isArray(community.images) && community.images[0]
-                    ? community.images[0]
+                  community.images?.[0]
+                    ? community.images?.[0]
                     : '/placeholder.svg'
                 }
                 alt={

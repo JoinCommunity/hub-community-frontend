@@ -10,6 +10,7 @@ import {
 } from 'react';
 
 import { FORWARD_PASSWORD, SIGN_IN, SIGN_UP } from '@/lib/queries';
+import { isTokenExpired } from '@/lib/jwt';
 import type {
   AuthContextType,
   AuthState,
@@ -96,13 +97,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userString = localStorage.getItem(STORAGE_KEYS.USER);
 
       if (token && userString) {
+        // Check if token is expired before loading
+        if (isTokenExpired(token)) {
+          console.log('Token is expired, clearing storage');
+          clearStorage();
+          return;
+        }
+
         const user = JSON.parse(userString);
         dispatch({ type: 'LOAD_FROM_STORAGE', payload: { user, token } });
       }
     } catch (error) {
       console.error('Error loading auth data from storage:', error);
+      // Clear potentially corrupted data
+      clearStorage();
     }
   }, []);
+
+  // Periodic token validation (check every 5 minutes)
+  useEffect(() => {
+    if (!state.isAuthenticated) return;
+
+    const interval = setInterval(() => {
+      validateToken();
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, [state.isAuthenticated, state.token]);
 
   // Save auth data to localStorage
   const saveToStorage = (user: User, token: string) => {
@@ -122,6 +143,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error clearing auth data from storage:', error);
     }
+  };
+
+  // Validate current token and clear if expired
+  const validateToken = () => {
+    if (state.token && isTokenExpired(state.token)) {
+      console.log('Current token is expired, signing out');
+      signOut();
+      return false;
+    }
+    return true;
   };
 
   const signIn = async (input: SignInInput) => {
@@ -192,6 +223,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp,
     signOut,
     forwardPassword,
+    validateToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
