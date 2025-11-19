@@ -245,7 +245,11 @@ export function TalkDetails({ talkId }: TalkDetailsProps) {
                   className="flex flex-col items-center text-center p-6 bg-gray-50 rounded-lg"
                 >
                   <Avatar className="w-24 h-24 mb-4">
-                    <AvatarImage src={speaker.avatar} alt={speaker.name} />
+                    <AvatarImage
+                      src={speaker.avatar}
+                      alt={speaker.name}
+                      className="object-cover"
+                    />
                     <AvatarFallback className="text-lg font-semibold bg-blue-100 text-blue-800">
                       {speaker.name
                         .split(' ')

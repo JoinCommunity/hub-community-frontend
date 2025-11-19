@@ -4,7 +4,7 @@ import { Event } from '../lib/types';
 export const adjustToBrazilTimezone = (date: Date): Date => {
   // Create a new date object and add 3 hours
   const adjustedDate = new Date(date);
-  adjustedDate.setHours(adjustedDate.getHours() + 3);
+  // adjustedDate.setHours(adjustedDate.getHours() + 3);
   return adjustedDate;
 };
 

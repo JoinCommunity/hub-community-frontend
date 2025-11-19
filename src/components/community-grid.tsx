@@ -101,7 +101,7 @@ export function CommunityGrid({
                   }
                   width={400}
                   height={192}
-                  className="w-full h-48 group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-48 object-contain group-hover:scale-105 transition-transform duration-300"
                   unoptimized
                   suppressHydrationWarning
                 />
