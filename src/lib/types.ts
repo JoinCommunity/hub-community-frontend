@@ -183,6 +183,7 @@ export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  showLogoutModal: boolean;
 }
 
 export interface AuthContextType extends AuthState {
@@ -191,6 +192,8 @@ export interface AuthContextType extends AuthState {
   signOut: () => void;
   forwardPassword: (email: string) => Promise<void>;
   validateToken: () => boolean;
+  showLogoutAlert: () => void;
+  hideLogoutAlert: () => void;
 }
 
 // Agenda Types

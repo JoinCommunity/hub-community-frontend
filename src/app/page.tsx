@@ -1,13 +1,15 @@
+'use client';
+
 import { Suspense } from 'react';
 
 import { CommunityGrid } from '@/components/community-grid';
-import { CommunityGridSkeleton } from '@/components/community-grid-skeleton';
 import { EventsSection } from '@/components/events-section';
-import { EventsSectionSkeleton } from '@/components/events-section-skeleton';
 import { HeroSection } from '@/components/hero-section';
 import { PastEventsSection } from '@/components/past-events-section';
 import { PastEventsSectionSkeleton } from '@/components/past-events-section-skeleton';
 import { SearchAndFilters } from '@/components/search-and-filters';
+import { CommunityGridSkeleton } from '../components/community-grid-skeleton';
+import { EventsSectionSkeleton } from '../components/events-section-skeleton';
 
 export default function HomePage() {
   return (

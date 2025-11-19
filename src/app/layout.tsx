@@ -5,6 +5,7 @@ import type React from 'react';
 import { ApolloProviderWrapper } from '@/components/apollo-provider';
 import { FirebaseProvider } from '@/components/firebase-provider';
 import { Footer } from '@/components/footer';
+import { LogoutModalWrapper } from '@/components/logout-modal-wrapper';
 import { Navigation } from '@/components/navigation';
 import { AgendaProvider } from '@/contexts/agenda-context';
 import { AuthProvider } from '@/contexts/auth-context';
@@ -31,6 +32,7 @@ export default function RootLayout({
         <FirebaseProvider>
           <ApolloProviderWrapper>
             <AuthProvider>
+              <LogoutModalWrapper />
               <AgendaProvider>
                 <FilterProvider>
                   <Navigation />

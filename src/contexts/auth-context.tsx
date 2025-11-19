@@ -32,13 +32,16 @@ type AuthAction =
   | { type: 'AUTH_SUCCESS'; payload: { user: User; token: string } }
   | { type: 'AUTH_ERROR' }
   | { type: 'SIGN_OUT' }
-  | { type: 'LOAD_FROM_STORAGE'; payload: { user: User; token: string } };
+  | { type: 'LOAD_FROM_STORAGE'; payload: { user: User; token: string } }
+  | { type: 'SHOW_LOGOUT_ALERT' }
+  | { type: 'HIDE_LOGOUT_ALERT' };
 
 const initialState: AuthState = {
   user: null,
   token: null,
   isAuthenticated: false,
   isLoading: false,
+  showLogoutModal: false,
 };
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
@@ -74,6 +77,16 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         isAuthenticated: true,
         user: action.payload.user,
         token: action.payload.token,
+      };
+    case 'SHOW_LOGOUT_ALERT':
+      return {
+        ...state,
+        showLogoutModal: true,
+      };
+    case 'HIDE_LOGOUT_ALERT':
+      return {
+        ...state,
+        showLogoutModal: false,
       };
     default:
       return state;
@@ -125,6 +138,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, [state.isAuthenticated, state.token]);
 
+  // Listen for token expired events from Apollo client
+  useEffect(() => {
+    const handleTokenExpired = () => {
+      console.log('Token expired event received, showing logout modal');
+      dispatch({ type: 'SIGN_OUT' });
+      dispatch({ type: 'SHOW_LOGOUT_ALERT' });
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth:tokenExpired', handleTokenExpired);
+      return () => window.removeEventListener('auth:tokenExpired', handleTokenExpired);
+    }
+  }, []);
+
   // Save auth data to localStorage
   const saveToStorage = (user: User, token: string) => {
     try {
@@ -149,10 +176,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const validateToken = () => {
     if (state.token && isTokenExpired(state.token)) {
       console.log('Current token is expired, signing out');
-      signOut();
+      signOut(true); // Show logout alert
       return false;
     }
     return true;
+  };
+
+  // Show logout alert modal
+  const showLogoutAlert = () => {
+    dispatch({ type: 'SHOW_LOGOUT_ALERT' });
+  };
+
+  // Hide logout alert modal
+  const hideLogoutAlert = () => {
+    dispatch({ type: 'HIDE_LOGOUT_ALERT' });
   };
 
   const signIn = async (input: SignInInput) => {
@@ -203,9 +240,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signOut = () => {
+  const signOut = (showAlert = false) => {
     clearStorage();
     dispatch({ type: 'SIGN_OUT' });
+    if (showAlert) {
+      dispatch({ type: 'SHOW_LOGOUT_ALERT' });
+    }
   };
 
   const forwardPassword = async (email: string) => {
@@ -224,6 +264,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signOut,
     forwardPassword,
     validateToken,
+    showLogoutAlert,
+    hideLogoutAlert,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

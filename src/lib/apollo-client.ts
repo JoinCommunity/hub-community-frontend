@@ -21,6 +21,8 @@ const authLink = setContext((_, { headers }) => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('auth_user');
+      // Dispatch event to show logout modal
+      window.dispatchEvent(new CustomEvent('auth:tokenExpired'));
     }
     // Don't include authorization header for expired tokens
     return {

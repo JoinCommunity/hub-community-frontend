@@ -81,7 +81,6 @@ export const GET_EVENTS = gql`
           title
           short_description
           full_description
-          images
         }
         talks {
           id
