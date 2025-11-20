@@ -99,7 +99,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-96 bg-gradient-to-r from-blue-600 to-purple-700">
+      <div className="relative min-h-64 md:min-h-80 lg:min-h-96 bg-gradient-to-r from-blue-600 to-purple-700">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-30"
           style={{
@@ -108,39 +108,45 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
         ></div>
         <div className="absolute inset-0 bg-black/40"></div>
 
-        <div className="relative container mx-auto px-4 h-full flex items-center">
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-4 h-full flex items-center py-8 md:py-12">
           <div className="text-white max-w-4xl">
-            <h1 className="text-5xl font-bold mb-4">{community.title}</h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+              {community.title}
+            </h1>
             <RichText
               content={community.short_description}
-              className="text-xl mb-6 opacity-90"
+              className="text-base md:text-lg lg:text-xl mb-6 opacity-90"
             />
 
-            <div className="flex flex-wrap gap-6 mb-6">
+            <div className="flex flex-wrap gap-4 md:gap-6 mb-6">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                <span>
+                <span className="text-sm md:text-base">
                   {community.members_quantity.toLocaleString()} membros
                 </span>
               </div>
               {community.location && (
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
-                  <span>{community.location}</span>
+                  <span className="text-sm md:text-base">
+                    {community.location}
+                  </span>
                 </div>
               )}
               {community.founded_date && (
                 <div className="flex items-center gap-2">
                   <Calendar className="h-5 w-5" />
-                  <span>Fundada em {community.founded_date}</span>
+                  <span className="text-sm md:text-base">
+                    Fundada em {community.founded_date}
+                  </span>
                 </div>
               )}
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100"
+                className="bg-white text-blue-600 hover:bg-gray-100 w-full sm:w-auto"
                 disabled={
                   !community.links ||
                   community.links.length === 0 ||
@@ -162,7 +168,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent"
+                className="border-white text-white hover:bg-white hover:text-blue-600 bg-transparent w-full sm:w-auto"
                 onClick={() => {
                   navigator.share({
                     title: `Confira a comunidade ${community.title}\n`,
