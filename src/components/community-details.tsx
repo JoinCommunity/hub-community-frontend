@@ -24,6 +24,7 @@ import { CommunityResponse } from '@/lib/types';
 import {
   adjustToBrazilTimezone,
   getNextFutureEvents,
+  getOngoingEvents,
   getPastEvents,
 } from '../utils/event';
 
@@ -93,6 +94,7 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
 
   const pastEvents = getPastEvents(community.events || []);
   const nextFutureEvents = getNextFutureEvents(community.events || []);
+  const ongoingEvents = getOngoingEvents(community.events || []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -203,6 +205,68 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Ongoing Events */}
+            {!!ongoingEvents?.length && (
+              <Card className="border-green-200 bg-green-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-green-700">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </span>
+                    Eventos em Andamento
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {ongoingEvents.map(event => (
+                      <div
+                        key={event.id}
+                        className="flex items-center justify-between p-4 bg-white border border-green-200 rounded-lg hover:shadow-md transition-shadow"
+                      >
+                        <div>
+                          <h4 className="font-semibold text-gray-900">
+                            {event.title}
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            {adjustToBrazilTimezone(
+                              new Date(event.start_date)
+                            ).toLocaleDateString('pt-BR', {
+                              day: '2-digit',
+                              month: 'long',
+                              year: 'numeric',
+                            })}
+                            {' - '}
+                            {adjustToBrazilTimezone(
+                              new Date(event.end_date)
+                            ).toLocaleDateString('pt-BR', {
+                              day: '2-digit',
+                              month: 'long',
+                              year: 'numeric',
+                            })}
+                          </p>
+                          {!!event.talks?.length && (
+                            <p className="text-sm text-gray-600">
+                              • {event.talks.length} palestras
+                            </p>
+                          )}
+                        </div>
+                        <Link href={`/events/${event.id}`}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="border-green-600 text-green-700 hover:bg-green-100"
+                          >
+                            Ver Detalhes
+                          </Button>
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Upcoming Events */}
             <Card>
@@ -393,6 +457,16 @@ export function CommunityDetails({ communityId }: CommunityDetailsProps) {
                     {pastEvents?.length || 0}
                   </span>
                 </div>
+                {!!ongoingEvents?.length && (
+                  <div className="flex justify-between">
+                    <span className="text-green-600 font-medium">
+                      Eventos em andamento
+                    </span>
+                    <span className="font-semibold text-green-600">
+                      {ongoingEvents.length}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-gray-600">Próximos eventos</span>
                   <span className="font-semibold">

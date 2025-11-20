@@ -52,6 +52,7 @@ export const GET_COMMUNITY_BY_ID = gql`
         documentId
         title
         start_date
+        end_date
       }
       tags {
         id
