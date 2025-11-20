@@ -5,6 +5,8 @@ import { Suspense } from 'react';
 import { CommunityGrid } from '@/components/community-grid';
 import { EventsSection } from '@/components/events-section';
 import { HeroSection } from '@/components/hero-section';
+import { OngoingEventsSection } from '@/components/ongoing-events-section';
+import { OngoingEventsSectionSkeleton } from '@/components/ongoing-events-section-skeleton';
 import { PastEventsSection } from '@/components/past-events-section';
 import { PastEventsSectionSkeleton } from '@/components/past-events-section-skeleton';
 import { SearchAndFilters } from '@/components/search-and-filters';
@@ -23,6 +25,16 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Comunidades</h2>
           <Suspense fallback={<CommunityGridSkeleton />}>
             <CommunityGrid />
+          </Suspense>
+        </section>
+
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+            <span className="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
+            Eventos em Andamento
+          </h2>
+          <Suspense fallback={<OngoingEventsSectionSkeleton />}>
+            <OngoingEventsSection />
           </Suspense>
         </section>
 
