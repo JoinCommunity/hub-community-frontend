@@ -91,6 +91,7 @@ export interface Event {
   start_date: string;
   end_date: string;
   images?: string[];
+  subscription_link?: string;
   communities: {
     id: string;
     title: string;

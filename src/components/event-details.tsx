@@ -286,7 +286,15 @@ export function EventDetails({ eventId }: EventDetailsProps) {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 w-full sm:w-auto"
+                className="bg-white text-blue-600 hover:bg-gray-100"
+                disabled={!event.subscription_link}
+                onClick={() => {
+                  if (event.subscription_link) {
+                    window.open(event.subscription_link, '_blank');
+                  } else {
+                    alert('Link de inscrição não disponível.');
+                  }
+                }}
               >
                 <Calendar className="h-4 w-4 mr-2" />
                 Participar do Evento

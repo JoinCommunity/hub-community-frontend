@@ -140,6 +140,7 @@ export const GET_EVENT_BY_ID = gql`
       start_date
       end_date
       images
+      subscription_link
       communities {
         id
         title
